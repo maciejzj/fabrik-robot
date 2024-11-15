@@ -146,9 +146,13 @@ function RobotArm({ joints }) {
 }
 
 
-function RobotStage({ width, height, refreshTimeoutMs = 5 }) {
+function RobotStage({ width, height, numSegments, attached, refreshTimeoutMs = 5 }) {
   let [targetVec2D, setTarget] = useState(new Vec2D(100, 100));
-  let robot = useRef(Robot.with_n_segments(new Vec2D(width / 2, height), 5, 50, true));
+  let robot = useRef(Robot.with_n_segments(new Vec2D(width / 2, height), numSegments, 50, attached));
+
+  useEffect(() => {
+    robot.current = Robot.with_n_segments(new Vec2D(width / 2, height), numSegments, 50, attached);
+  } ,[numSegments, attached]);
 
   const updateRobot = (x, y) => {
     setTarget(new Vec2D(x, y));
@@ -172,15 +176,38 @@ function RobotStage({ width, height, refreshTimeoutMs = 5 }) {
   );
 }
 
+function Counter({count, setCount}) {
+  const increment = () => { setCount(count + 1); };
+  const decrement = () => { setCount(count - 1); };
+
+  return (
+    <div>
+    <button onClick={increment} >+</button>
+    <label>{count}</label>
+    <button onClick={decrement} >-</button>
+    </div>
+  )
+}
+
+function Toogle({ toogled, setToogle, enableText, disableText }) {
+  const toogle = () => { setToogle(!toogled) };
+  return <button onClick={toogle}>{toogled? disableText : enableText }</button>;
+}
+
 
 // UI components and app
 
 
 function App() {
+  let [numSegments, setNumSegments] = useState(5);
+  let [attached, setAttached] = useState(true);
+
   return (
     <main>
       <h1>FARBIK robot</h1>
-      <RobotStage width={1000} height={1000} />
+      <Counter count={numSegments} setCount={setNumSegments} />
+      <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+      <RobotStage width={1000} height={800} numSegments={numSegments} attached={attached} />
     </main>
   );
 }
