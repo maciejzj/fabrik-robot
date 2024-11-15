@@ -200,10 +200,8 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
 
   return (
     <div>
-      <label>{label}: </label>
-      <button onClick={decrement} disabled={count <= min}>-</button>
-      <label>{count}</label>
-      <button onClick={increment} disabled={count >= max}>+</button>
+      {label} <button onClick={decrement} disabled={count <= min}>-</button>
+      {count} <button onClick={increment} disabled={count >= max}>+</button>
     </div>
   );
 }
@@ -223,12 +221,19 @@ function App() {
   let [attached, setAttached] = useState(true);
 
   return (
-    <main>
-      <h1>FARBIK robot</h1>
-      <Counter label="Num segments" count={numSegments} setCount={setNumSegments} min={1} max={10} />
-      <Counter label="Segment length" count={segmentLength} setCount={setSegmentLength} min={10} max={100} interval={10} />
-      <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
-      <RobotStage width={1000} height={800} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
+    <main class="mx-auto w-1/2">
+
+      <h1 class="m-20 text-xl text-center">FARBIK robot</h1>
+
+      <section class="grid grid-cols-3 gap-4 justify-items-center">
+        <Counter label="Num segments" count={numSegments} setCount={setNumSegments} min={1} max={10} />
+        <Counter label="Segment length" count={segmentLength} setCount={setSegmentLength} min={10} max={100} interval={10} />
+        <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+      </section>
+
+      <section class="flex justify-center">
+          <RobotStage width={800} height={800} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
+      </section>
     </main>
   );
 }
