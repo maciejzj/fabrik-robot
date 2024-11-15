@@ -1,6 +1,6 @@
 import './App.css';
 
-import { Stage, Layer, Line, Group } from 'react-konva';
+import { Stage, Layer, Line, Group, Circle } from 'react-konva';
 import { useEffect, useRef, useState } from 'react';
 
 
@@ -130,9 +130,27 @@ class Robot {
 // Drawing components
 
 
-function RobotSegment({ baseVec2D, headVec2D }) {
+function RobotSegment({ baseVec2D, headVec2D, baseRadius = 10, headRadius = 10 }) {
   return (
-    <Line points={[baseVec2D.x, baseVec2D.y, headVec2D.x, headVec2D.y]} stroke={"black"} />
+    <Group>
+      <Line points={[
+        baseVec2D.x + baseRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
+        baseVec2D.y + baseRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
+
+        headVec2D.x + headRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
+        headVec2D.y + headRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
+
+        headVec2D.x + headRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
+        headVec2D.y + headRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
+
+        baseVec2D.x + baseRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
+        baseVec2D.y + baseRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
+      ]}
+        stroke={"black"} closed={true} fill={"grey"}
+      />
+      <Circle x={baseVec2D.x} y={baseVec2D.y} radius={baseRadius} stroke={"black"} fill={"grey"} />
+      <Circle x={headVec2D.x} y={headVec2D.y} radius={headRadius} stroke={"black"} fill={"grey"} />
+    </Group >
   )
 }
 
