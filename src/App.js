@@ -1,6 +1,7 @@
 import './App.css';
 
 import { Stage, Layer, Line, Group } from 'react-konva';
+import { useEffect, useRef, useState } from 'react';
 
 
 // Utils
@@ -95,11 +96,7 @@ class Robot {
   constructor(baseVec2D, segmentLengths, attached = true) {
     this.base = baseVec2D;
     this.attached = attached;
-    this.segments = []
-    for (let length of segmentLengths) {
-      let segment = Segment.fromPolar(baseVec2D, length, 0);
-      this.segments.push(segment)
-    }
+    this.segments = segmentLengths.map(length => Segment.fromPolar(baseVec2D, length, 0));
   }
 
   static with_n_segments(baseVec2D, n, length, attached = true) {
@@ -107,7 +104,7 @@ class Robot {
   }
 
   get joints() {
-    let bases = this.segments.slice(0, -1).map(segment => segment.base);
+    let bases = this.segments.map(segment => segment.base);
     let lastHead = this.segments[this.segments.length - 1].head;
     return [...bases, lastHead];
   }
@@ -115,7 +112,7 @@ class Robot {
   follow(targetVec2D) {
     // Follow target
     this.segments[this.segments.length - 1].follow(targetVec2D);
-    for (let [prev, next] of pairwise(this.segments.reverse())) {
+    for (let [prev, next] of pairwise([...this.segments].reverse())) {
       next.follow(prev.base);
     }
 
@@ -149,20 +146,30 @@ function RobotArm({ joints }) {
 }
 
 
-function RobotStage({ width, height }) {
-  let robot = Robot.with_n_segments(new Vec2D(100, 100), 5, 25)
-  for (let i = 0; i < 100; i++) {
-    robot.follow(new Vec2D(340, 250));
+function RobotStage({ width, height, refreshTimeoutMs = 5 }) {
+  let [targetVec2D, setTarget] = useState(new Vec2D(100, 100));
+  let robot = useRef(Robot.with_n_segments(new Vec2D(width / 2, height), 5, 50, true));
+
+  const updateRobot = (x, y) => {
+    setTarget(new Vec2D(x, y));
+    robot.current.follow(targetVec2D);
   }
-  let joints = robot.joints
+
+  const handleMouseMove = (event) => {
+    setTimeout(() => {
+      const stage = event.target.getStage();
+      const { x, y } = stage.getPointerPosition();
+      updateRobot(x, y);
+    }, refreshTimeoutMs)
+  };
 
   return (
-    <Stage width={width} height={height}>
+    <Stage width={width} height={height} onMouseMove={handleMouseMove}>
       <Layer>
-        <RobotArm joints={joints} />
+        <RobotArm joints={robot.current.joints} />
       </Layer>
     </Stage>
-  )
+  );
 }
 
 
