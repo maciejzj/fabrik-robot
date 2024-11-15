@@ -152,7 +152,7 @@ function RobotStage({ width, height, numSegments, attached, refreshTimeoutMs = 5
 
   useEffect(() => {
     robot.current = Robot.with_n_segments(new Vec2D(width / 2, height), numSegments, 50, attached);
-  } ,[numSegments, attached]);
+  }, [numSegments, attached]);
 
   const updateRobot = (x, y) => {
     setTarget(new Vec2D(x, y));
@@ -176,22 +176,22 @@ function RobotStage({ width, height, numSegments, attached, refreshTimeoutMs = 5
   );
 }
 
-function Counter({count, setCount}) {
+function Counter({ count, setCount }) {
   const increment = () => { setCount(count + 1); };
   const decrement = () => { setCount(count - 1); };
 
   return (
     <div>
-    <button onClick={increment} >+</button>
-    <label>{count}</label>
-    <button onClick={decrement} >-</button>
+      <button onClick={decrement} disabled={count <= 1}>-</button>
+      <label>{count}</label>
+      <button onClick={increment} disabled={count >= 10}>+</button>
     </div>
-  )
+  );
 }
 
 function Toogle({ toogled, setToogle, enableText, disableText }) {
   const toogle = () => { setToogle(!toogled) };
-  return <button onClick={toogle}>{toogled? disableText : enableText }</button>;
+  return <button onClick={toogle}>{toogled ? disableText : enableText}</button>;
 }
 
 
