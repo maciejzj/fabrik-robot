@@ -146,10 +146,10 @@ function RobotSegment({ baseVec2D, headVec2D, baseRadius = 10, headRadius = 10 }
         baseVec2D.x + baseRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
         baseVec2D.y + baseRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
       ]}
-        stroke={"black"} closed={true} fill={"grey"}
+        closed={true} fill={"grey"}
       />
-      <Circle x={baseVec2D.x} y={baseVec2D.y} radius={baseRadius} stroke={"black"} fill={"grey"} />
-      <Circle x={headVec2D.x} y={headVec2D.y} radius={headRadius} stroke={"black"} fill={"grey"} />
+      <Circle x={baseVec2D.x} y={baseVec2D.y} radius={baseRadius} stroke={"white"} fill={"grey"} />
+      <Circle x={headVec2D.x} y={headVec2D.y} radius={headRadius} stroke={"white"} fill={"grey"} />
     </Group >
   )
 }
@@ -199,16 +199,18 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   const decrement = () => { setCount(count - interval); };
 
   return (
-    <div>
-      {label} <button onClick={decrement} disabled={count <= min}>-</button>
-      {count} <button onClick={increment} disabled={count >= max}>+</button>
+    <div class="grid grid-rows-2 grid-cols-[auto,50px,auto] border rounded-xl divide-x">
+      <div class="row-span-2 flex items-center justify-center px-3">{label}</div>
+      <div class="row-span-2 flex items-center justify-center px-3">{count}</div>
+      <button class="border-b px-3" onClick={increment} disabled={count >= max}>+</button>
+      <button class="px-3" onClick={decrement} disabled={count <= min}>-</button>
     </div>
   );
 }
 
 function Toogle({ toogled, setToogle, enableText, disableText }) {
   const toogle = () => { setToogle(!toogled) };
-  return <button onClick={toogle}>{toogled ? disableText : enableText}</button>;
+  return <button class="border rounded-xl px-3" onClick={toogle}>{toogled ? disableText : enableText}</button>;
 }
 
 
@@ -223,16 +225,18 @@ function App() {
   return (
     <main class="mx-auto w-1/2">
 
-      <h1 class="m-20 text-xl text-center">FARBIK robot</h1>
+      <h1 class="mt-36 mb-18 text-6xl text-center">FARBIK robot</h1>
 
-      <section class="grid grid-cols-3 gap-4 justify-items-center">
-        <Counter label="Num segments" count={numSegments} setCount={setNumSegments} min={1} max={10} />
-        <Counter label="Segment length" count={segmentLength} setCount={setSegmentLength} min={10} max={100} interval={10} />
-        <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
-      </section>
+      <div>
+        <section class="my-16 grid grid-cols-3 gap-4 justify-items-center">
+          <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={10} />
+          <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={10} max={100} interval={10} />
+          <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+        </section>
+      </div>
 
-      <section class="flex justify-center">
-          <RobotStage width={800} height={800} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
+      <section class="flex justify-center border rounded-3xl dotted">
+        <RobotStage width={800} height={800} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
       </section>
     </main>
   );
