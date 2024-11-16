@@ -155,21 +155,31 @@ function RobotSegment({ baseVec2D, headVec2D, baseRadius = 10, headRadius = 10 }
 }
 
 
-function RobotArm({ joints }) {
+function RobotArm({ joints, radiuses }) {
+  let segments = [];
+  for (let i = 0; i < joints.length - 1; i++) {
+    segments.push(<RobotSegment baseVec2D={joints[i]} headVec2D={joints[i + 1]} baseRadius={radiuses[i]} headRadius={radiuses[i + 1]} />);
+  }
+
   return (
     <Group>
-      {pairwise(joints).map(([base, head]) => <RobotSegment baseVec2D={base} headVec2D={head} />)}
+      {segments}
     </Group>
-  )
+  );
 }
 
 
 function RobotStage({ width, height, numSegments, segmentLength, attached, refreshTimeoutMs = 5 }) {
   let [targetVec2D, setTarget] = useState(new Vec2D(100, 100));
-  let robot = useRef(Robot.with_n_segments(new Vec2D(width / 2, height), numSegments, segmentLength, attached));
+
+  // TODO: Adjust min/max and allowed value ranges
+  let segmentLengths = Array.from({ length: numSegments }, (_, i) => ((numSegments + 5 - i) / numSegments * segmentLength));
+  let radiuses = Array.from({ length: numSegments }, (_, i) => ((numSegments + 5 - i) / numSegments * 10));
+
+  let robot = useRef(new Robot(new Vec2D(width / 2, height), segmentLengths, attached));
 
   useEffect(() => {
-    robot.current = Robot.with_n_segments(new Vec2D(width / 2, height), numSegments, segmentLength, attached);
+    robot.current = new Robot(new Vec2D(width / 2, height), segmentLengths, attached);
   }, [numSegments, segmentLength, attached]);
 
   const updateRobot = (x, y) => {
@@ -188,7 +198,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, refre
   return (
     <Stage width={width} height={height} onMouseMove={handleMouseMove}>
       <Layer>
-        <RobotArm joints={robot.current.joints} />
+        <RobotArm joints={robot.current.joints} radiuses={radiuses} />
       </Layer>
     </Stage>
   );
