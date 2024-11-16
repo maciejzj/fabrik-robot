@@ -199,18 +199,18 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   const decrement = () => { setCount(count - interval); };
 
   return (
-    <div class="grid grid-rows-2 grid-cols-[auto,50px,auto] border rounded-xl divide-x">
-      <div class="row-span-2 flex items-center justify-center px-3">{label}</div>
-      <div class="row-span-2 flex items-center justify-center px-3">{count}</div>
-      <button class="border-b px-3" onClick={increment} disabled={count >= max}>+</button>
-      <button class="px-3" onClick={decrement} disabled={count <= min}>-</button>
+    <div className="grid grid-rows-2 grid-cols-[auto,50px,auto] border rounded-xl divide-x">
+      <div className="row-span-2 flex items-center justify-center px-3">{label}</div>
+      <div className="row-span-2 flex items-center justify-center px-3">{count}</div>
+      <button className="border-b px-3" onClick={increment} disabled={count >= max}>+</button>
+      <button className="px-3" onClick={decrement} disabled={count <= min}>-</button>
     </div>
   );
 }
 
 function Toogle({ toogled, setToogle, enableText, disableText }) {
   const toogle = () => { setToogle(!toogled) };
-  return <button class="border rounded-xl px-3" onClick={toogle}>{toogled ? disableText : enableText}</button>;
+  return <button className="border rounded-xl px-3" onClick={toogle}>{toogled ? disableText : enableText}</button>;
 }
 
 
@@ -223,19 +223,19 @@ function App() {
   let [attached, setAttached] = useState(true);
 
   return (
-    <main class="mx-auto w-1/2">
+    <main className="mx-auto w-1/2">
 
-      <h1 class="mt-36 mb-18 text-6xl text-center">FARBIK robot</h1>
+      <h1 className="mt-36 mb-18 text-6xl text-center">FARBIK robot</h1>
 
       <div>
-        <section class="my-16 grid grid-cols-3 gap-4 justify-items-center">
+        <section className="my-16 grid grid-cols-3 gap-4 justify-items-center">
           <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={10} />
           <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={10} max={100} interval={10} />
           <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
         </section>
       </div>
 
-      <section class="flex justify-center border rounded-3xl dotted">
+      <section className="flex justify-center border rounded-3xl dotted">
         <RobotStage width={800} height={800} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
       </section>
     </main>
