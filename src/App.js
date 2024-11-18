@@ -1,7 +1,7 @@
 import './App.css';
 
 import { Stage, Layer, Line, Group, Circle } from 'react-konva';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState, version } from 'react';
 
 
 // Utils
@@ -93,10 +93,11 @@ class Segment {
 
 
 class Robot {
-  constructor(baseVec2D, segmentLengths, attached = true) {
+  constructor(baseVec2D, segmentLengths, attached = true, targetVec2D = new Vec2D(0, 0)) {
     this.base = baseVec2D;
     this.attached = attached;
     this.segments = segmentLengths.map(length => Segment.fromPolar(baseVec2D, length, 0));
+    this.targetVec2D = targetVec2D;
   }
 
   static with_n_segments(baseVec2D, n, length, attached = true) {
@@ -109,9 +110,9 @@ class Robot {
     return [...bases, lastHead];
   }
 
-  follow(targetVec2D) {
+  update() {
     // Follow target
-    this.segments[this.segments.length - 1].follow(targetVec2D);
+    this.segments[this.segments.length - 1].follow(this.targetVec2D);
     for (let [prev, next] of pairwise([...this.segments].reverse())) {
       next.follow(prev.base);
     }
@@ -170,33 +171,36 @@ function RobotArm({ joints, radiuses }) {
 
 
 function RobotStage({ width, height, numSegments, segmentLength, attached, refreshTimeoutMs = 5 }) {
-  let [targetVec2D, setTarget] = useState(new Vec2D(100, 100));
-
   // TODO: Adjust min/max and allowed value ranges
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
   let segmentLengths = Array.from({ length: numSegments }, (_, i) => ((numSegments + 5 - i) / numSegments * segmentLength));
   let radiuses = Array.from({ length: numSegments }, (_, i) => ((numSegments + 5 - i) / numSegments * 10));
 
-  let robot = useRef(new Robot(new Vec2D(width / 2, height), segmentLengths, attached));
+  let robot = useRef(new Robot(new Vec2D(width / 2, height), segmentLengths, attached, new Vec2D(width / 2, 0)));
 
   useEffect(() => {
+    let target = robot.current.targetVec2D;
     robot.current = new Robot(new Vec2D(width / 2, height), segmentLengths, attached);
+    robot.current.targetVec2D = target;
   }, [numSegments, segmentLength, attached]);
 
-  const updateRobot = (x, y) => {
-    setTarget(new Vec2D(x, y));
-    robot.current.follow(targetVec2D);
-  }
+  useEffect(() => {
+    let id = setInterval(() => { robot.current.update(); forceUpdate(); }, refreshTimeoutMs);
+    return () => { clearInterval(id); }
+  }, []);
 
   const handleMouseMove = (event) => {
-    setTimeout(() => {
-      const stage = event.target.getStage();
-      const { x, y } = stage.getPointerPosition();
-      updateRobot(x, y);
-    }, refreshTimeoutMs)
+    const stage = event.target.getStage();
+    const { x, y } = stage.getPointerPosition();
+    robot.current.targetVec2D = new Vec2D(x, y);
   };
 
+  const onMouseLeave = (event) => {
+    robot.current.targetVec2D = new Vec2D(width / 2, height /2);
+  }
+
   return (
-    <Stage width={width} height={height} onMouseMove={handleMouseMove}>
+    <Stage width={width} height={height} onMouseMove={handleMouseMove} onMouseOut={onMouseLeave} >
       <Layer>
         <RobotArm joints={robot.current.joints} radiuses={radiuses} />
       </Layer>
