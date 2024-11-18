@@ -170,11 +170,26 @@ function RobotArm({ joints, radiuses }) {
 }
 
 
+function scaleDecresingSize(i, total, min, max) {
+  return (total - i) / (total) * (max - min) + min;
+}
+
+
 function RobotStage({ width, height, numSegments, segmentLength, attached, refreshTimeoutMs = 5 }) {
-  // TODO: Adjust min/max and allowed value ranges
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
-  let segmentLengths = Array.from({ length: numSegments }, (_, i) => ((numSegments + 5 - i) / numSegments * segmentLength));
-  let radiuses = Array.from({ length: numSegments }, (_, i) => ((numSegments + 5 - i) / numSegments * 10));
+
+  const [minJointRadius, maxJointRadius] = [10, 25];
+  const minSegmentLength = 50;
+
+  let segmentLengths;
+  let radiuses;
+  if (attached) {
+    segmentLengths = Array.from({ length: numSegments }, (_, i) => scaleDecresingSize(i, numSegments, minSegmentLength, segmentLength));
+    radiuses = Array.from({ length: numSegments + 1 }, (_, i) => scaleDecresingSize(i, numSegments + 1, minJointRadius, maxJointRadius));
+  } else {
+    segmentLengths = Array(numSegments).fill(segmentLength);
+    radiuses = Array(numSegments + 1).fill(15)
+  }
 
   let robot = useRef(new Robot(new Vec2D(width / 2, height), segmentLengths, attached, new Vec2D(width / 2, 0)));
 
@@ -195,12 +210,8 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, refre
     robot.current.targetVec2D = new Vec2D(x, y);
   };
 
-  const onMouseLeave = (event) => {
-    robot.current.targetVec2D = new Vec2D(width / 2, height /2);
-  }
-
   return (
-    <Stage width={width} height={height} onMouseMove={handleMouseMove} onMouseOut={onMouseLeave} >
+    <Stage width={width} height={height} onMouseMove={handleMouseMove} >
       <Layer>
         <RobotArm joints={robot.current.joints} radiuses={radiuses} />
       </Layer>
@@ -233,7 +244,7 @@ function Toogle({ toogled, setToogle, enableText, disableText }) {
 
 function App() {
   let [numSegments, setNumSegments] = useState(5);
-  let [segmentLength, setSegmentLength] = useState(50);
+  let [segmentLength, setSegmentLength] = useState(120);
   let [attached, setAttached] = useState(true);
 
   return (
@@ -243,8 +254,8 @@ function App() {
 
       <div>
         <section className="my-16 grid grid-cols-3 gap-4 justify-items-center">
-          <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={10} />
-          <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={10} max={100} interval={10} />
+          <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
+          <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={100} max={150} interval={10} />
           <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
         </section>
       </div>
