@@ -250,19 +250,18 @@ function App() {
   return (
     <main className="mx-auto w-1/2">
 
-      <h1 className="mt-36 mb-18 text-6xl text-center">FARBIK robot</h1>
+      <h1 className="mt-16 mb-12 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
 
-      <div>
-        <section className="my-16 grid grid-cols-3 gap-4 justify-items-center">
-          <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
-          <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={100} max={150} interval={10} />
-          <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
-        </section>
-      </div>
+      <section className="my-8 grid grid-cols-3 gap-4 justify-items-center">
+        <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
+        <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={100} max={150} interval={10} />
+        <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+      </section>
 
       <section className="flex justify-center border rounded-3xl dotted">
-        <RobotStage width={800} height={800} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
+        <RobotStage width={800} height={700} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
       </section>
+
     </main>
   );
 }
