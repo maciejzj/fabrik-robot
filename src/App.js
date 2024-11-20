@@ -1,7 +1,7 @@
 import './App.css';
 
 import { Stage, Layer, Line, Group, Circle } from 'react-konva';
-import { useEffect, useReducer, useRef, useState, version } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 
 // Utils
@@ -92,16 +92,15 @@ class Segment {
 }
 
 
-class Robot {
-  constructor(baseVec2D, segmentLengths, attached = true, targetVec2D = new Vec2D(0, 0)) {
+class RobotModel {
+  constructor(baseVec2D, segmentLengths, attached = true) {
     this.base = baseVec2D;
     this.attached = attached;
     this.segments = segmentLengths.map(length => Segment.fromPolar(baseVec2D, length, 0));
-    this.targetVec2D = targetVec2D;
   }
 
   static with_n_segments(baseVec2D, n, length, attached = true) {
-    return new Robot(baseVec2D, Array(n).fill(length), attached = attached);
+    return new RobotModel(baseVec2D, Array(n).fill(length), attached = attached);
   }
 
   get joints() {
@@ -110,9 +109,9 @@ class Robot {
     return [...bases, lastHead];
   }
 
-  update() {
+  follow(targetVec2D) {
     // Follow target
-    this.segments[this.segments.length - 1].follow(this.targetVec2D);
+    this.segments[this.segments.length - 1].follow(targetVec2D);
     for (let [prev, next] of pairwise([...this.segments].reverse())) {
       next.follow(prev.base);
     }
@@ -176,48 +175,60 @@ function scaleDecresingSize(i, total, min, max) {
 
 
 function RobotStage({ width, height, numSegments, segmentLength, attached, refreshTimeoutMs = 5 }) {
-  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
-
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
-  let segmentLengths;
-  let radiuses;
-  if (attached) {
-    segmentLengths = Array.from({ length: numSegments }, (_, i) => scaleDecresingSize(i, numSegments, minSegmentLength, segmentLength));
-    radiuses = Array.from({ length: numSegments + 1 }, (_, i) => scaleDecresingSize(i, numSegments + 1, minJointRadius, maxJointRadius));
-  } else {
-    segmentLengths = Array(numSegments).fill(segmentLength);
-    radiuses = Array(numSegments + 1).fill(15)
-  }
+  // Decreasing segment sizes closer to the head if attached, constant size if detached
+  const segmentLengths = attached
+    ? Array.from({ length: numSegments }, (_, i) => scaleDecresingSize(i, numSegments, minSegmentLength, segmentLength))
+    : Array(numSegments).fill(segmentLength);
+  const radiuses = attached
+    ? Array.from({ length: numSegments + 1 }, (_, i) => scaleDecresingSize(i, numSegments + 1, minJointRadius, maxJointRadius))
+    : Array(numSegments + 1).fill(15);
 
-  let robot = useRef(new Robot(new Vec2D(width / 2, height), segmentLengths, attached, new Vec2D(width / 2, 0)));
+  const targetVec2D = useRef(new Vec2D(width / 2, 0));
+  const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
+  const [joints, setJoints] = useState(robotModel.current.joints);
 
+  // Rebuild the model if the props change
   useEffect(() => {
-    let target = robot.current.targetVec2D;
-    robot.current = new Robot(new Vec2D(width / 2, height), segmentLengths, attached);
-    robot.current.targetVec2D = target;
+    robotModel.current = new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached);
   }, [numSegments, segmentLength, attached]);
 
+  // Update the target based on the mouse position
   useEffect(() => {
-    let id = setInterval(() => { robot.current.update(); forceUpdate(); }, refreshTimeoutMs);
-    return () => { clearInterval(id); }
+    const id = window.addEventListener("mousemove", (event) => {
+      const rect = document.getElementById("robot-stage").getBoundingClientRect();
+      targetVec2D.current.x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
+      targetVec2D.current.y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
+    });
+
+    return () => {
+      window.removeEventListener("mousemove", id);
+    };
   }, []);
 
-  const handleMouseMove = (event) => {
-    const stage = event.target.getStage();
-    const { x, y } = stage.getPointerPosition();
-    robot.current.targetVec2D = new Vec2D(x, y);
-  };
+  // Update the model based on current target and redraw the robot based on model joints positions
+  useEffect(() => {
+    const id = setInterval(() => {
+      robotModel.current.follow(targetVec2D.current);
+      setJoints(robotModel.current.joints);
+    }, refreshTimeoutMs);
+
+    return () => {
+      clearInterval(id);
+    };
+  }, []);
 
   return (
-    <Stage width={width} height={height} onMouseMove={handleMouseMove} >
+    <Stage id="robot-stage" width={width} height={height} className="border rounded-3xl dotted overflow-hidden">
       <Layer>
-        <RobotArm joints={robot.current.joints} radiuses={radiuses} />
+        <RobotArm joints={robotModel.current.joints} radiuses={radiuses} />
       </Layer>
     </Stage>
   );
 }
+
 
 function Counter({ label, count, setCount, min, max, interval = 1 }) {
   const increment = () => { setCount(count + interval); };
@@ -248,9 +259,9 @@ function App() {
   let [attached, setAttached] = useState(true);
 
   return (
-    <main className="mx-auto w-1/2">
+    <main className="mx-auto w-[800px]">
 
-      <h1 className="mt-16 mb-12 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
+      <h1 className="mt-12 mb-8 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
 
       <section className="my-8 grid grid-cols-3 gap-4 justify-items-center">
         <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
@@ -258,7 +269,7 @@ function App() {
         <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
       </section>
 
-      <section className="flex justify-center border rounded-3xl dotted">
+      <section>
         <RobotStage width={800} height={700} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
       </section>
 
