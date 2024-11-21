@@ -132,6 +132,19 @@ class RobotModel {
 }
 
 
+class LowPassFilter {
+  constructor(alpha) {
+    this.alpha = alpha;
+    this.state = 0;
+  }
+
+  update(input) {
+    this.state = this.state + this.alpha * (input - this.state);
+    return this.state;
+  }
+}
+
+
 // Drawing components
 
 
@@ -179,7 +192,7 @@ function scaleDecresingSize(i, total, min, max) {
 }
 
 
-function RobotStage({ width, height, numSegments, segmentLength, attached, refreshTimeoutMs = 5 }) {
+function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0, refreshTimeoutMs = 5 }) {
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
@@ -193,6 +206,8 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, refre
 
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
+  const targetFilterX = useRef(new LowPassFilter(1 - smoothingLevel));
+  const targetFilterY = useRef(new LowPassFilter(1 - smoothingLevel));
   const [joints, setJoints] = useState(robotModel.current.joints);
 
   // Rebuild the model if the props change
@@ -200,12 +215,17 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, refre
     robotModel.current = new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached);
   }, [numSegments, segmentLength, attached]);
 
+  useEffect(() => {
+    targetFilterX.current.alpha = 1 - smoothingLevel;
+    targetFilterY.current.alpha = 1 - smoothingLevel;
+  }, [smoothingLevel]);
+
   // Update the target based on the mouse position
   useEffect(() => {
     const id = window.addEventListener("mousemove", (event) => {
       const rect = document.getElementById("robot-stage").getBoundingClientRect();
-      targetVec2D.current.x = clip(event.clientX - rect.x, 0, rect.width);
-      targetVec2D.current.y = clip(event.clientY - rect.y, 0, rect.height);
+      targetVec2D.current.x = targetFilterX.current.update(clip(event.clientX - rect.x, 0, rect.width));
+      targetVec2D.current.y = targetFilterY.current.update(clip(event.clientY - rect.y, 0, rect.height));
     });
 
     return () => {
@@ -249,6 +269,19 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   );
 }
 
+function Slider({ label, value, setValue, min, max, step }) {
+  const handleChange = (event) => { setValue(event.target.value) }
+
+  return (
+    <div>
+      {label}
+      <input type="range" min={min} max={max} step={step} value={value} onChange={handleChange}>
+      </input>
+      {value}
+    </div>
+  )
+}
+
 function Toogle({ toogled, setToogle, enableText, disableText }) {
   const toogle = () => { setToogle(!toogled) };
   return <button className="border rounded-xl px-3" onClick={toogle}>{toogled ? disableText : enableText}</button>;
@@ -262,11 +295,14 @@ function App() {
   let [numSegments, setNumSegments] = useState(5);
   let [segmentLength, setSegmentLength] = useState(120);
   let [attached, setAttached] = useState(true);
+  let [smoothingLevel, setSmoothingLevel] = useState(0.5);
 
   return (
     <main className="mx-auto w-[800px]">
 
       <h1 className="mt-12 mb-8 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
+
+      <Slider label="Smoothing" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
 
       <section className="my-8 grid grid-cols-3 gap-4 justify-items-center">
         <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
@@ -275,7 +311,7 @@ function App() {
       </section>
 
       <section>
-        <RobotStage width={800} height={700} numSegments={numSegments} segmentLength={segmentLength} attached={attached} />
+        <RobotStage width={800} height={700} numSegments={numSegments} segmentLength={segmentLength} smoothingLevel={smoothingLevel} attached={attached} />
       </section>
 
     </main>
