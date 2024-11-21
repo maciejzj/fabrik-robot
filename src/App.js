@@ -144,6 +144,19 @@ class LowPassFilter {
   }
 }
 
+class LowPassFilter2D {
+  constructor(alpha) {
+    this.filterX = new LowPassFilter(alpha);
+    this.filterY = new LowPassFilter(alpha)
+  }
+
+  update(inputVec2D) {
+    let x = this.filterX.update(inputVec2D.x);
+    let y = this.filterY.update(inputVec2D.y);
+    return new Vec2D(x, y);
+  }
+}
+
 
 // Drawing components
 
@@ -206,8 +219,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
 
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
-  const targetFilterX = useRef(new LowPassFilter(1 - smoothingLevel));
-  const targetFilterY = useRef(new LowPassFilter(1 - smoothingLevel));
+  const targetLowPassFilter = useRef(new LowPassFilter2D(1 - smoothingLevel));
   const [joints, setJoints] = useState(robotModel.current.joints);
 
   // Rebuild the model if the props change
@@ -216,26 +228,23 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   }, [numSegments, segmentLength, attached]);
 
   useEffect(() => {
-    targetFilterX.current.alpha = 1 - smoothingLevel;
-    targetFilterY.current.alpha = 1 - smoothingLevel;
+    targetLowPassFilter.current.filterX.alpha = 1 - smoothingLevel;
+    targetLowPassFilter.current.filterY.alpha = 1 - smoothingLevel;
   }, [smoothingLevel]);
 
   // Update the target based on the mouse position
   useEffect(() => {
     const handleMouseMove = (event) => {
       const rect = document.getElementById("robot-stage").getBoundingClientRect();
-      const [x, y] = [event.clientX - rect.x, event.clientY - rect.y];
-      targetVec2D.current.x = targetFilterX.current.update(clip(x, 0, rect.width));
-      targetVec2D.current.y = targetFilterY.current.update(clip(y, 0, rect.height));
+      targetVec2D.current.x = clip(event.clientX - rect.x, 0, rect.width);
+      targetVec2D.current.y = clip(event.clientY - rect.y, 0, rect.height);
     };
 
     const handleTouchMove = (event) => {
       event.preventDefault();
       const rect = document.getElementById("robot-stage").getBoundingClientRect();
-      const touch = event.touches[0];
-      const [x, y] = [touch.clientX - rect.x, touch.clientY - rect.y];
-      targetVec2D.current.x = targetFilterX.current.update(clip(x, 0, rect.width));
-      targetVec2D.current.y = targetFilterY.current.update(clip(y, 0, rect.height));
+      targetVec2D.current.x = clip(event.touches[0].clientX - rect.x, 0, rect.width);
+      targetVec2D.current.y = clip(event.touches[0].clientY - rect.y, 0, rect.height);
     };
 
     // Add listeners for both mouse and touch events
@@ -252,7 +261,8 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   // Update the model based on current target and redraw the robot based on model joints positions
   useEffect(() => {
     const id = setInterval(() => {
-      robotModel.current.follow(targetVec2D.current);
+      let targetFiltered = targetLowPassFilter.current.update(targetVec2D.current);
+      robotModel.current.follow(targetFiltered);
       setJoints(robotModel.current.joints);
     }, refreshTimeoutMs);
 
