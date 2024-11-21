@@ -275,8 +275,7 @@ function Slider({ label, value, setValue, min, max, step }) {
   return (
     <div>
       {label}
-      <input type="range" min={min} max={max} step={step} value={value} onChange={handleChange}>
-      </input>
+      <input className="mx-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" type="range" min={min} max={max} step={step} value={value} onChange={handleChange} />
       {value}
     </div>
   )
@@ -302,12 +301,15 @@ function App() {
 
       <h1 className="mt-12 mb-8 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
 
-      <Slider label="Smoothing" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
-
-      <section className="my-8 grid grid-cols-3 gap-4 justify-items-center">
-        <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
-        <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={100} max={150} interval={10} />
-        <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+      <section>
+        <div className="mx-auto w-[300px]">
+          <Slider label="Smoothing" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
+        </div>
+        <div className="my-8 grid grid-cols-3 gap-4 justify-items-center">
+          <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
+          <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={50} max={150} interval={10} />
+          <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+        </div>
       </section>
 
       <section>
