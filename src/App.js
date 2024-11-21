@@ -222,14 +222,30 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
 
   // Update the target based on the mouse position
   useEffect(() => {
-    const id = window.addEventListener("mousemove", (event) => {
+    const handleMouseMove = (event) => {
       const rect = document.getElementById("robot-stage").getBoundingClientRect();
-      targetVec2D.current.x = targetFilterX.current.update(clip(event.clientX - rect.x, 0, rect.width));
-      targetVec2D.current.y = targetFilterY.current.update(clip(event.clientY - rect.y, 0, rect.height));
-    });
+      const [x, y] = [event.clientX - rect.x, event.clientY - rect.y];
+      targetVec2D.current.x = targetFilterX.current.update(clip(x, 0, rect.width));
+      targetVec2D.current.y = targetFilterY.current.update(clip(y, 0, rect.height));
+    };
 
+    const handleTouchMove = (event) => {
+      event.preventDefault();
+      const rect = document.getElementById("robot-stage").getBoundingClientRect();
+      const touch = event.touches[0];
+      const [x, y] = [touch.clientX - rect.x, touch.clientY - rect.y];
+      targetVec2D.current.x = targetFilterX.current.update(clip(x, 0, rect.width));
+      targetVec2D.current.y = targetFilterY.current.update(clip(y, 0, rect.height));
+    };
+
+    // Add listeners for both mouse and touch events
+    window.addEventListener("mousemove", handleMouseMove);
+    document.getElementById("robot-stage").addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    // Cleanup function
     return () => {
-      window.removeEventListener("mousemove", id);
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.getElementById("robot-stage").removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
