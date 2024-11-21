@@ -147,7 +147,7 @@ class LowPassFilter {
 class LowPassFilter2D {
   constructor(alpha) {
     this.filterX = new LowPassFilter(alpha);
-    this.filterY = new LowPassFilter(alpha)
+    this.filterY = new LowPassFilter(alpha);
   }
 
   update(inputVec2D) {
@@ -192,16 +192,12 @@ function RobotArm({ joints, radiuses }) {
     segments.push(<RobotSegment baseVec2D={joints[i]} headVec2D={joints[i + 1]} baseRadius={radiuses[i]} headRadius={radiuses[i + 1]} />);
   }
 
-  return (
-    <Group>
-      {segments}
-    </Group>
-  );
+  return <Group>{segments}</Group>;
 }
 
 
 function scaleDecresingSize(i, total, min, max) {
-  return (total - i) / (total) * (max - min) + min;
+  return (total - i) / total * (max - min) + min;
 }
 
 
@@ -295,8 +291,9 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   );
 }
 
+
 function Slider({ label, value, setValue, min, max, step }) {
-  const handleChange = (event) => { setValue(event.target.value) }
+  const handleChange = (event) => { setValue(event.target.value); };
 
   return (
     <div>
@@ -304,8 +301,9 @@ function Slider({ label, value, setValue, min, max, step }) {
       <input className="mx-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" type="range" min={min} max={max} step={step} value={value} onChange={handleChange} />
       {value}
     </div>
-  )
+  );
 }
+
 
 function Toogle({ toogled, setToogle, enableText, disableText }) {
   const toogle = () => { setToogle(!toogled) };
