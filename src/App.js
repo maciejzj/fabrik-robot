@@ -12,6 +12,10 @@ function pairwise(arr) {
 }
 
 
+function clip(value, min, max) {
+  return Math.max(min, Math.min(value, max));
+}
+
 // Robot model
 
 
@@ -79,7 +83,8 @@ class Segment {
   head_towards(targetVec2D) {
     let length = this.length;
     let angle = Math.atan2(targetVec2D.y - this.base.y, targetVec2D.x - this.base.x);
-    this.head = new Vec2D(this.base.x + length * Math.cos(angle), this.base.y + length * Math.sin(angle));
+    this.head.x = this.base.x + length * Math.cos(angle);
+    this.head.y = this.base.y + length * Math.sin(angle);
     return this;
   }
 
@@ -199,8 +204,8 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, refre
   useEffect(() => {
     const id = window.addEventListener("mousemove", (event) => {
       const rect = document.getElementById("robot-stage").getBoundingClientRect();
-      targetVec2D.current.x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
-      targetVec2D.current.y = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
+      targetVec2D.current.x = clip(event.clientX - rect.x, 0, rect.width);
+      targetVec2D.current.y = clip(event.clientY - rect.y, 0, rect.height);
     });
 
     return () => {
