@@ -1,23 +1,19 @@
-import './App.css';
+import "./App.css";
 
-import { Stage, Layer, Line, Group, Circle } from 'react-konva';
-import { useEffect, useRef, useState } from 'react';
-
+import { Stage, Layer, Line, Group, Circle, Path } from "react-konva";
+import { useEffect, useRef, useState } from "react";
 
 // Utils
-
 
 function pairwise(arr) {
   return arr.slice(0, -1).map((_, i) => [arr[i], arr[i + 1]]);
 }
-
 
 function clip(value, min, max) {
   return Math.max(min, Math.min(value, max));
 }
 
 // Robot model
-
 
 class Vec2D {
   constructor(x, y) {
@@ -47,7 +43,6 @@ class Vec2D {
     return Math.sqrt(this.x ** 2 + this.y ** 2);
   }
 }
-
 
 class Segment {
   constructor(baseVec2D, headVec2D) {
@@ -96,20 +91,19 @@ class Segment {
   }
 }
 
-
 class RobotModel {
   constructor(baseVec2D, segmentLengths, attached = true) {
     this.base = baseVec2D;
     this.attached = attached;
-    this.segments = segmentLengths.map(length => Segment.fromPolar(baseVec2D, length, 0));
+    this.segments = segmentLengths.map((length) => Segment.fromPolar(baseVec2D, length, 0));
   }
 
   static with_n_segments(baseVec2D, n, length, attached = true) {
-    return new RobotModel(baseVec2D, Array(n).fill(length), attached = attached);
+    return new RobotModel(baseVec2D, Array(n).fill(length), (attached = attached));
   }
 
   get joints() {
-    let bases = this.segments.map(segment => segment.base);
+    let bases = this.segments.map((segment) => segment.base);
     let lastHead = this.segments[this.segments.length - 1].head;
     return [...bases, lastHead];
   }
@@ -130,7 +124,6 @@ class RobotModel {
     }
   }
 }
-
 
 class LowPassFilter {
   constructor(alpha) {
@@ -157,61 +150,72 @@ class LowPassFilter2D {
   }
 }
 
-
 // Drawing components
 
-
-function RobotSegment({ baseVec2D, headVec2D, baseRadius = 10, headRadius = 10 }) {
+function RobotSegment({ baseVec2D: base, headVec2D: head, baseRadius = 10, headRadius = 10 }) {
   return (
     <Group>
-      <Line points={[
-        baseVec2D.x + baseRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
-        baseVec2D.y + baseRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
+      <Line
+        points={[
+          base.x + baseRadius * Math.cos(Math.atan2(head.y - base.y, head.x - base.x) - Math.PI / 2),
+          base.y + baseRadius * Math.sin(Math.atan2(head.y - base.y, head.x - base.x) - Math.PI / 2),
 
-        headVec2D.x + headRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
-        headVec2D.y + headRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) - Math.PI / 2),
+          head.x + headRadius * Math.cos(Math.atan2(head.y - base.y, head.x - base.x) - Math.PI / 2),
+          head.y + headRadius * Math.sin(Math.atan2(head.y - base.y, head.x - base.x) - Math.PI / 2),
 
-        headVec2D.x + headRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
-        headVec2D.y + headRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
+          head.x + headRadius * Math.cos(Math.atan2(head.y - base.y, head.x - base.x) + Math.PI / 2),
+          head.y + headRadius * Math.sin(Math.atan2(head.y - base.y, head.x - base.x) + Math.PI / 2),
 
-        baseVec2D.x + baseRadius * Math.cos(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
-        baseVec2D.y + baseRadius * Math.sin(Math.atan2(headVec2D.y - baseVec2D.y, headVec2D.x - baseVec2D.x) + Math.PI / 2),
-      ]}
-        closed={true} fill={"grey"}
+          base.x + baseRadius * Math.cos(Math.atan2(head.y - base.y, head.x - base.x) + Math.PI / 2),
+          base.y + baseRadius * Math.sin(Math.atan2(head.y - base.y, head.x - base.x) + Math.PI / 2),
+        ]}
+        closed={true}
+        fill={"grey"}
       />
-      <Circle x={baseVec2D.x} y={baseVec2D.y} radius={baseRadius} stroke={"white"} fill={"grey"} />
-      <Circle x={headVec2D.x} y={headVec2D.y} radius={headRadius} stroke={"white"} fill={"grey"} />
-    </Group >
-  )
+      <Circle x={base.x} y={base.y} radius={baseRadius} stroke={"white"} fill={"grey"} />
+      <Circle x={head.x} y={head.y} radius={headRadius} stroke={"white"} fill={"grey"} />
+    </Group>
+  );
 }
-
 
 function RobotArm({ joints, radiuses }) {
   let segments = [];
   for (let i = 0; i < joints.length - 1; i++) {
-    segments.push(<RobotSegment baseVec2D={joints[i]} headVec2D={joints[i + 1]} baseRadius={radiuses[i]} headRadius={radiuses[i + 1]} />);
+    segments.push(
+      <RobotSegment
+        baseVec2D={joints[i]}
+        headVec2D={joints[i + 1]}
+        baseRadius={radiuses[i]}
+        headRadius={radiuses[i + 1]}
+      />,
+    );
   }
 
   return <Group>{segments}</Group>;
 }
 
-
 function scaleDecresingSize(i, total, min, max) {
-  return (total - i) / total * (max - min) + min;
+  return ((total - i) / total) * (max - min) + min;
 }
-
 
 function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0, refreshTimeoutMs = 5 }) {
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
   // Decreasing segment sizes closer to the head if attached, constant size if detached
-  const segmentLengths = attached
-    ? Array.from({ length: numSegments }, (_, i) => scaleDecresingSize(i, numSegments, minSegmentLength, segmentLength))
-    : Array(numSegments).fill(segmentLength);
-  const radiuses = attached
-    ? Array.from({ length: numSegments + 1 }, (_, i) => scaleDecresingSize(i, numSegments + 1, minJointRadius, maxJointRadius))
-    : Array(numSegments + 1).fill(15);
+  let segmentLengths;
+  let radiuses;
+  if (attached) {
+    segmentLengths = Array.from({ length: numSegments }, (_, i) =>
+      scaleDecresingSize(i, numSegments, minSegmentLength, segmentLength),
+    );
+    radiuses = Array.from({ length: numSegments + 1 }, (_, i) =>
+      scaleDecresingSize(i, numSegments + 1, minJointRadius, maxJointRadius),
+    );
+  } else {
+    segmentLengths = Array(numSegments).fill(segmentLength);
+    radiuses = Array(numSegments + 1).fill(15);
+  }
 
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
@@ -276,43 +280,62 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   );
 }
 
-
 function Counter({ label, count, setCount, min, max, interval = 1 }) {
-  const increment = () => { setCount(count + interval); };
-  const decrement = () => { setCount(count - interval); };
+  const increment = () => {
+    setCount(count + interval);
+  };
+  const decrement = () => {
+    setCount(count - interval);
+  };
 
   return (
     <div className="grid grid-rows-2 grid-cols-[auto,50px,auto] border rounded-xl divide-x">
       <div className="row-span-2 flex items-center justify-center px-3">{label}</div>
       <div className="row-span-2 flex items-center justify-center px-3">{count}</div>
-      <button className="border-b px-3" onClick={increment} disabled={count >= max}>+</button>
-      <button className="px-3" onClick={decrement} disabled={count <= min}>-</button>
+      <button className="border-b px-3" onClick={increment} disabled={count >= max}>
+        +
+      </button>
+      <button className="px-3" onClick={decrement} disabled={count <= min}>
+        -
+      </button>
     </div>
   );
 }
 
-
 function Slider({ label, value, setValue, min, max, step }) {
-  const handleChange = (event) => { setValue(event.target.value); };
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
 
   return (
     <div>
       {label}
-      <input className="mx-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" type="range" min={min} max={max} step={step} value={value} onChange={handleChange} />
+      <input
+        className="mx-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={handleChange}
+      />
       {value}
     </div>
   );
 }
 
-
 function Toogle({ toogled, setToogle, enableText, disableText }) {
-  const toogle = () => { setToogle(!toogled) };
-  return <button className="border rounded-xl px-3" onClick={toogle}>{toogled ? disableText : enableText}</button>;
+  const toogle = () => {
+    setToogle(!toogled);
+  };
+  return (
+    <button className="border rounded-xl px-3" onClick={toogle}>
+      {toogled ? disableText : enableText}
+    </button>
+  );
 }
 
-
 // UI components and app
-
 
 function App() {
   let [numSegments, setNumSegments] = useState(5);
@@ -322,7 +345,6 @@ function App() {
 
   return (
     <main className="mx-auto w-[800px]">
-
       <h1 className="mt-12 mb-8 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
 
       <section>
@@ -337,9 +359,15 @@ function App() {
       </section>
 
       <section>
-        <RobotStage width={800} height={700} numSegments={numSegments} segmentLength={segmentLength} smoothingLevel={smoothingLevel} attached={attached} />
+        <RobotStage
+          width={800}
+          height={700}
+          numSegments={numSegments}
+          segmentLength={segmentLength}
+          smoothingLevel={smoothingLevel}
+          attached={attached}
+        />
       </section>
-
     </main>
   );
 }
