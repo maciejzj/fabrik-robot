@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { Stage, Layer, Line, Group, Circle, Path } from "react-konva";
+import { Stage, Layer, Line, Group, Circle } from "react-konva";
 import { useEffect, useRef, useState } from "react";
 
 // Utils
