@@ -294,9 +294,9 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
         <div className="text-xl">{label}</div>
         <div className="text-5xl font-mono">{count}</div>
       </div>
-      <div className="flex flex-col justify-between items-center rounded-full px-1.5 py-0.5 text-3xl text-white bg-black">
-      <button onClick={increment} disabled={count >= max}>+</button>
-      <button onClick={decrement} disabled={count <= min}>-</button>
+      <div className="flex flex-col justify-between items-center text-3xl text-white">
+      <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 bg-black disabled:bg-stone-500" onClick={increment} disabled={count >= max}>+</button>
+      <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 bg-black disabled:bg-stone-500" onClick={decrement} disabled={count <= min}>-</button>
       </div>
     </div>
   );
