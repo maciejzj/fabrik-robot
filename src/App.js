@@ -170,10 +170,10 @@ function RobotSegment({ baseVec2D: base, headVec2D: head, baseRadius = 10, headR
           base.y + baseRadius * Math.sin(Math.atan2(head.y - base.y, head.x - base.x) + Math.PI / 2),
         ]}
         closed={true}
-        fill={"grey"}
+        fill={"black"}
       />
-      <Circle x={base.x} y={base.y} radius={baseRadius} stroke={"white"} fill={"grey"} />
-      <Circle x={head.x} y={head.y} radius={headRadius} stroke={"white"} fill={"grey"} />
+      <Circle x={base.x} y={base.y} radius={baseRadius} stroke={"white"} fill={"black"} />
+      <Circle x={head.x} y={head.y} radius={headRadius} stroke={"white"} fill={"black"} />
     </Group>
   );
 }
@@ -289,15 +289,15 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   };
 
   return (
-    <div className="grid grid-rows-2 grid-cols-[auto,50px,auto] border rounded-xl divide-x">
-      <div className="row-span-2 flex items-center justify-center px-3">{label}</div>
-      <div className="row-span-2 flex items-center justify-center px-3">{count}</div>
-      <button className="border-b px-3" onClick={increment} disabled={count >= max}>
-        +
-      </button>
-      <button className="px-3" onClick={decrement} disabled={count <= min}>
-        -
-      </button>
+    <div className="flex justify-between gap-3 p-6 rounded-[2.5rem] border min-h-36">
+      <div className="flex flex-col justify-between">
+        <div className="text-xl">{label}</div>
+        <div className="text-5xl font-mono">{count}</div>
+      </div>
+      <div className="flex flex-col justify-between items-center rounded-full px-1.5 py-0.5 text-3xl text-white bg-black">
+      <button onClick={increment} disabled={count >= max}>+</button>
+      <button onClick={decrement} disabled={count <= min}>-</button>
+      </div>
     </div>
   );
 }
@@ -308,10 +308,10 @@ function Slider({ label, value, setValue, min, max, step }) {
   };
 
   return (
-    <div>
+    <div className="flex gap-6 justify-between items-center min-w-96 min-h-16 px-8 bg-black rounded-[2.5rem] text-lg font-mono tracking-wider text-white">
       {label}
       <input
-        className="mx-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        className="h-1 flex-grow bg-white rounded-lg appearance-none cursor-pointer"
         type="range"
         min={min}
         max={max}
@@ -329,7 +329,7 @@ function Toogle({ toogled, setToogle, enableText, disableText }) {
     setToogle(!toogled);
   };
   return (
-    <button className="border rounded-xl px-3" onClick={toogle}>
+    <button className="h-16 px-6 text-center rounded-[2.5rem] text-xl tracking-wider bg-gray-100" onClick={toogle}>
       {toogled ? disableText : enableText}
     </button>
   );
@@ -348,8 +348,8 @@ function App() {
       <h1 className="mt-12 mb-8 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
 
       <section>
-        <div className="mx-auto w-[300px]">
-          <Slider label="Smoothing" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
+        <div className="mx-auto mx-4">
+          <Slider label="Glide" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
         </div>
         <div className="my-8 grid grid-cols-3 gap-4 justify-items-center">
           <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
