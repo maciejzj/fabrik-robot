@@ -272,7 +272,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   }, []);
 
   return (
-    <Stage id="robot-stage" width={width} height={height} className="border rounded-3xl dotted overflow-hidden">
+    <Stage id="robot-stage" width={width} height={height} className="dotted overflow-hidden">
       <Layer>
         <RobotArm joints={robotModel.current.joints} radiuses={radiuses} />
       </Layer>
@@ -289,14 +289,14 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   };
 
   return (
-    <div className="flex justify-between gap-3 p-6 rounded-[2.5rem] border min-h-36">
+    <div className="flex justify-between gap-3 p-6 rounded-[2.5rem] bg-white h-32">
       <div className="flex flex-col justify-between">
         <div className="text-xl">{label}</div>
         <div className="text-5xl font-mono">{count}</div>
       </div>
-      <div className="flex flex-col justify-between items-center text-3xl text-white">
-      <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 bg-black disabled:bg-stone-500" onClick={increment} disabled={count >= max}>+</button>
-      <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 bg-black disabled:bg-stone-500" onClick={decrement} disabled={count <= min}>-</button>
+      <div className="flex flex-col justify-between items-center text-3xl text-white select-none">
+        <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-gray-400" onClick={increment} disabled={count >= max}>+</button>
+        <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-gray-400" onClick={decrement} disabled={count <= min}>-</button>
       </div>
     </div>
   );
@@ -308,7 +308,7 @@ function Slider({ label, value, setValue, min, max, step }) {
   };
 
   return (
-    <div className="flex gap-6 justify-between items-center min-w-96 min-h-16 px-8 bg-black rounded-[2.5rem] text-lg font-mono tracking-wider text-white">
+    <div className="flex gap-6 justify-between items-center h-16 px-8 bg-black rounded-[2.5rem] text-lg font-mono tracking-wider text-white">
       {label}
       <input
         className="h-1 flex-grow bg-white rounded-lg appearance-none cursor-pointer"
@@ -329,7 +329,7 @@ function Toogle({ toogled, setToogle, enableText, disableText }) {
     setToogle(!toogled);
   };
   return (
-    <button className="h-16 px-6 text-center rounded-[2.5rem] text-xl tracking-wider bg-gray-100" onClick={toogle}>
+    <button className="w-full h-16 px-6 text-center rounded-[2.5rem] text-xl tracking-wider bg-gray-100" onClick={toogle}>
       {toogled ? disableText : enableText}
     </button>
   );
@@ -344,31 +344,72 @@ function App() {
   let [smoothingLevel, setSmoothingLevel] = useState(0.5);
 
   return (
-    <main className="mx-auto w-[800px]">
-      <h1 className="mt-12 mb-8 text-6xl font-bold tracking-widest text-center">FABRIK robot</h1>
-
-      <section>
-        <div className="mx-auto mx-4">
-          <Slider label="Glide" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
+    <main>
+      <header className="border-b-2 border-black">
+        <div className="w-[1024px] mx-auto p-5 border-x-2 border-black">
+          <h1 className="text-4xl tracking-widest font-mono">FABRIK Robot</h1>
         </div>
-        <div className="my-8 grid grid-cols-3 gap-4 justify-items-center">
-          <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
-          <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={50} max={150} interval={10} />
-          <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+      </header>
+
+      <section className="border-b-2 border-black">
+        <div className="w-[1024px] mx-auto p-5 border-x-2 border-black bg-stone-200">
+          <h2 className="mb-3 text-3xl tracking-wider font-mono">Controls</h2>
+          <div className="grid grid-rows-2 grid-cols-8 gap-0">
+            <div className="row-span-2 col-span-2">
+              <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
+            </div>
+            <div className="row-span-2 col-span-2">
+              <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={50} max={150} interval={10} />
+            </div>
+            <div className="row-start-1 col-start-5 col-span-4 flex">
+              <div className="w-32">
+                <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+              </div>
+              <div className="flex-grow bg-gray-100 rounded-full"></div>
+            </div>
+            <div className="row-start-2 col-start-5 col-span-4">
+              <Slider label="Glide" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
+            </div>
+          </div>
         </div>
       </section>
 
-      <section>
-        <RobotStage
-          width={800}
-          height={700}
-          numSegments={numSegments}
-          segmentLength={segmentLength}
-          smoothingLevel={smoothingLevel}
-          attached={attached}
-        />
+      <section className="border-b-2 border-black">
+        <div className="w-[1024px] mx-auto border-x-2 border-black">
+          <RobotStage
+            width={1024}
+            height={700}
+            numSegments={numSegments}
+            segmentLength={segmentLength}
+            smoothingLevel={smoothingLevel}
+            attached={attached}
+          />
+        </div>
       </section>
-    </main>
+
+      <section className="border-b-2 border-black">
+        <div className="w-[1024px] mx-auto p-5 border-x-2 border-black bg-yellow-50 text-lg">
+          <h2 className="text-3xl mb-3 tracking-wider font-mono">About</h2>
+          This website demonstrates the FABRIK (Forward And Backward Reaching Inverse Kinematics) [1] algorithm for robotic motions.
+          <div className="grid grid-cols-2 mt-3">
+            <div className="max-w-96 px-3 border-l-2 border-black">
+              <a className="hover:underline" href="">
+                [1] A. Aristidou, J. Lasenby, FABRIK: A fast, iterative solver for the Inverse Kinematics problem, Graphical Models
+              </a>
+            </div>
+            <div className="max-w-32 px-3 border-l-2 border-black">
+              <a className="hover:underline" href="">Source code on GitHub</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-b-2 border-black">
+        <div className="w-[1024px] mx-auto p-5 border-x-2 border-b-2 border-black text-xl text-white bg-black">
+          Maciej Ziaja
+        </div>
+      </footer>
+    </main >
   );
 }
 
