@@ -289,14 +289,26 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   };
 
   return (
-    <div className="flex justify-between gap-3 p-6 rounded-[2.5rem] bg-white h-32">
+    <div className="flex h-32 min-w-44 justify-between gap-3 rounded-[2.5rem] bg-white p-6">
       <div className="flex flex-col justify-between">
         <div className="text-xl">{label}</div>
-        <div className="text-5xl font-mono">{count}</div>
+        <div className="font-mono text-5xl">{count}</div>
       </div>
-      <div className="flex flex-col justify-between items-center text-3xl text-white select-none">
-        <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300" onClick={increment} disabled={count >= max}>+</button>
-        <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300" onClick={decrement} disabled={count <= min}>-</button>
+      <div className="flex select-none flex-col items-center justify-between text-3xl text-white">
+        <button
+          className="w-full flex-grow rounded-t-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300"
+          onClick={increment}
+          disabled={count >= max}
+        >
+          +
+        </button>
+        <button
+          className="w-full flex-grow rounded-b-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300"
+          onClick={decrement}
+          disabled={count <= min}
+        >
+          -
+        </button>
       </div>
     </div>
   );
@@ -308,10 +320,10 @@ function Slider({ label, value, setValue, min, max, step }) {
   };
 
   return (
-    <div className="flex gap-6 justify-between items-center h-16 px-8 bg-black rounded-[2.5rem] text-lg font-mono tracking-wider text-white">
+    <div className="flex h-16 min-w-60 items-center justify-between gap-6 rounded-[2.5rem] bg-black px-8 font-mono text-lg tracking-wider text-white">
       {label}
       <input
-        className="min-w-6 h-1 flex-grow bg-white rounded-lg appearance-none cursor-pointer"
+        className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white"
         type="range"
         min={min}
         max={max}
@@ -329,7 +341,10 @@ function Toogle({ toogled, setToogle, enableText, disableText }) {
     setToogle(!toogled);
   };
   return (
-    <button className="w-full h-16 px-6 text-center rounded-[2.5rem] text-xl tracking-wider bg-gray-100" onClick={toogle}>
+    <button
+      className="h-16 w-full rounded-[2.5rem] bg-gray-100 px-6 text-center text-xl tracking-wider"
+      onClick={toogle}
+    >
       {toogled ? disableText : enableText}
     </button>
   );
@@ -339,9 +354,9 @@ function Toogle({ toogled, setToogle, enableText, disableText }) {
 
 function App() {
   let [numSegments, setNumSegments] = useState(5);
-  let [segmentLength, setSegmentLength] = useState(120);
+  let [segmentLen, setSegmentLen] = useState(120);
   let [attached, setAttached] = useState(true);
-  let [smoothingLevel, setSmoothingLevel] = useState(0.5);
+  let [smoothingLvl, setSmoothingLvl] = useState(0.5);
   let [width, setWidth] = useState(960);
 
   useEffect(() => {
@@ -349,76 +364,85 @@ function App() {
       let stageContainer = document.getElementById("robot-stage-container");
       setWidth(stageContainer.getBoundingClientRect().width);
     });
-    return () => { window.removeEventListener("resize", handle); };
+    return () => {
+      window.removeEventListener("resize", handle);
+    };
   }, []);
 
   return (
-    <main>
+    <main className="min-w-[320px]">
       <header className="border-b-2 border-black px-5">
-        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-black">
-          <h1 className="text-3xl tracking-widest font-mono">FABRIK Robot</h1>
+        <div className="mx-auto max-w-[960px] border-x-2 border-black p-5">
+          <h1 className="font-mono text-3xl tracking-widest">FABRIK Robot</h1>
         </div>
       </header>
 
       <section className="border-b-2 border-black px-5">
-        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-black bg-stone-200">
-          <h2 className="mb-3 text-2xl tracking-wider font-mono">Controls</h2>
-          <div className="grid gap-0 grid-rows-6 grid-cols-1 sm:grid-rows-4 sm:grid-cols-2 md:grid-rows-2 md:grid-cols-4">
-            <div className="row-span-2 col-span-1 md:row-span-2 md:col-span-1">
+        <div className="mx-auto max-w-[960px] border-x-2 border-black bg-stone-200 p-5">
+          <h2 className="mb-3 font-mono text-2xl tracking-wider">Controls</h2>
+          <div className="grid grid-cols-1 grid-rows-6 gap-0 sm:grid-cols-2 sm:grid-rows-4 md:grid-cols-4 md:grid-rows-2">
+            <div className="col-span-1 row-span-2 md:col-span-1 md:row-span-2">
               <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
             </div>
-            <div className="row-span-2 col-span-1 md:row-span-2 md:col-span-1">
-              <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={50} max={150} interval={10} />
+            <div className="col-span-1 row-span-2 md:col-span-1 md:row-span-2">
+              <Counter label="Length" count={segmentLen} setCount={setSegmentLen} min={50} max={150} interval={10} />
             </div>
-            <div className="sm:col-span-2 md:row-span-1 md:col-span-2 flex">
-              <div className="flex-grow sm:flex-grow-0 sm:w-36">
+            <div className="flex sm:col-span-2 md:col-span-2 md:row-span-1">
+              <div className="flex-grow sm:w-36 sm:flex-grow-0">
                 <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
               </div>
-              <div className="hidden sm:block flex-grow bg-gray-100 rounded-full"></div>
+              <div className="hidden flex-grow rounded-full bg-gray-100 sm:block"></div>
             </div>
             <div className="sm:col-span-2 md:row-span-1">
-              <Slider label="Glide" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
+              <Slider label="Glide" value={smoothingLvl} setValue={setSmoothingLvl} min={0} max={0.9} step={0.1} />
             </div>
           </div>
         </div>
       </section>
 
       <section className="border-b-2 border-black px-5">
-        <div id="robot-stage-container" className="max-w-[960px] mx-auto border-x-2 border-black">
+        <div id="robot-stage-container" className="mx-auto max-w-[960px] border-x-2 border-black">
           <RobotStage
             width={width}
             height={600}
             numSegments={numSegments}
-            segmentLength={segmentLength}
-            smoothingLevel={smoothingLevel}
+            segmentLength={segmentLen}
+            smoothingLevel={smoothingLvl}
             attached={attached}
           />
         </div>
       </section>
 
       <section className="border-b-2 border-black px-5">
-        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-black bg-yellow-50 sm:text-lg">
-          <h2 className="text-2xl mb-5 tracking-wider font-mono">About</h2>
-          This website demonstrates the FABRIK (Forward And Backward Reaching Inverse Kinematics) [1] algorithm for robotic motions.
-          <div className="grid md:grid-cols-2 gap-5 mt-5">
-            <div className="max-w-96 px-3 border-l-2 border-black">
+        <div className="mx-auto max-w-[960px] border-x-2 border-black bg-yellow-50 p-5 sm:text-lg">
+          <h2 className="mb-5 font-mono text-2xl tracking-wider">About</h2>
+          This website demonstrates the FABRIK (Forward And Backward Reaching Inverse Kinematics) [1] algorithm for
+          robotic motions.
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <div className="max-w-96 border-l-2 border-black px-3">
               <a className="hover:underline" href="">
-                [1] A. Aristidou, J. Lasenby, FABRIK: A fast, iterative solver for the Inverse Kinematics problem, Graphical Models
+                [1] A. Aristidou, J. Lasenby, FABRIK: A fast, iterative solver for the Inverse Kinematics problem,
+                Graphical Models
               </a>
             </div>
-            <div className="max-w-32 px-3 border-l-2 border-black">
-              <a className="hover:underline" href="">Source code on GitHub</a>
+            <div className="max-w-32 border-l-2 border-black px-3">
+              <a className="hover:underline" href="">
+                Source code on GitHub
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       <footer className="border-b-2 border-black px-5">
-        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-b-2 border-black text-xl text-white bg-black">
+        <div className="mx-auto flex max-w-[960px] flex-col justify-between gap-1 border-x-2 border-b-2 border-black bg-black p-5 text-lg text-white sm:flex-row sm:text-xl">
           Maciej Ziaja
+          <div>
+            <a href="">maciejzjg@gmail.com</a>
+          </div>
         </div>
       </footer>
-    </main >
+    </main>
   );
 }
 
