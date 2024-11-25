@@ -75,7 +75,7 @@ class Segment {
     return this;
   }
 
-  head_towards(targetVec2D) {
+  headTowards(targetVec2D) {
     let length = this.length;
     let angle = Math.atan2(targetVec2D.y - this.base.y, targetVec2D.x - this.base.x);
     this.head.x = this.base.x + length * Math.cos(angle);
@@ -84,7 +84,7 @@ class Segment {
   }
 
   follow(targetVec2D) {
-    this.head_towards(targetVec2D);
+    this.headTowards(targetVec2D);
     this.rebase(targetVec2D);
     this.move(this.base.sub(this.head));
     return this;
@@ -192,20 +192,20 @@ function RobotArm({ joints, radiuses }) {
 }
 
 
-function scaleDecresing(i, total, min, max) {
+function scaleDecraesing(i, total, min, max) {
   return ((total - i) / total) * (max - min) + min;
 }
 
 function calcSegmentLengths(numSegments, minLength, maxLength, attached) {
   if (attached) {
-    return Array.from({ length: numSegments }, (_, i) => scaleDecresing(i, numSegments, minLength, maxLength));
+    return Array.from({ length: numSegments }, (_, i) => scaleDecraesing(i, numSegments, minLength, maxLength));
   }
   return Array(numSegments).fill(maxLength);
 }
 
 function calcJointRadiuses(numSegments, minRadius, maxRadius, attached) {
   if (attached) {
-    return Array.from({ length: numSegments + 1 }, (_, i) => scaleDecresing(i, numSegments + 1, minRadius, maxRadius));
+    return Array.from({ length: numSegments + 1 }, (_, i) => scaleDecraesing(i, numSegments + 1, minRadius, maxRadius));
   }
   return Array(numSegments + 1).fill(15);
 }
@@ -337,16 +337,16 @@ function Slider({ label, value, setValue, min, max, step }) {
   );
 }
 
-function Toogle({ toogled, setToogle, enableText, disableText }) {
-  const toogle = () => {
-    setToogle(!toogled);
+function Toggle({ toggled, setToggle, enableText, disableText }) {
+  const toggle = () => {
+    setToggle(!toggled);
   };
   return (
     <button
       className="h-16 w-full rounded-[2.5rem] bg-gray-100 px-6 text-center text-xl tracking-wider"
-      onClick={toogle}
+      onClick={toggle}
     >
-      {toogled ? disableText : enableText}
+      {toggled ? disableText : enableText}
     </button>
   );
 }
@@ -390,7 +390,7 @@ function App() {
             </div>
             <div className="flex sm:col-span-2 md:col-span-2 md:row-span-1">
               <div className="flex-grow sm:w-36 sm:flex-grow-0">
-                <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
+                <Toggle toggled={attached} setToggle={setAttached} enableText="Attach" disableText="Detach" />
               </div>
               <div className="hidden flex-grow rounded-full bg-gray-100 sm:block"></div>
             </div>
