@@ -202,6 +202,8 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
+  console.log(`Component git width ${width}`);
+
   // Decreasing segment sizes closer to the head if attached, constant size if detached
   let segmentLengths;
   let radiuses;
@@ -225,7 +227,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   // Rebuild the model if the props change
   useEffect(() => {
     robotModel.current = new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached);
-  }, [numSegments, segmentLength, attached]);
+  }, [width, numSegments, segmentLength, attached]);
 
   useEffect(() => {
     targetLowPassFilter.current.filterX.alpha = 1 - smoothingLevel;
@@ -342,6 +344,16 @@ function App() {
   let [segmentLength, setSegmentLength] = useState(120);
   let [attached, setAttached] = useState(true);
   let [smoothingLevel, setSmoothingLevel] = useState(0.5);
+  let [width, setWidth] = useState(960);
+
+  useEffect(() => {
+    let handle = window.addEventListener("resize", () => {
+      let stageContainer = document.getElementById("robot-stage-container");
+      console.log(stageContainer.getBoundingClientRect().width);
+      setWidth(stageContainer.getBoundingClientRect().width);
+    });
+    return () => { window.removeEventListener("resize", handle); };
+  }, []);
 
   return (
     <main>
@@ -375,9 +387,9 @@ function App() {
       </section>
 
       <section className="border-b-2 border-black">
-        <div className="w-[960px] mx-auto border-x-2 border-black">
+        <div id="robot-stage-container" className="max-w-[960px] mx-auto border-x-2 border-black">
           <RobotStage
-            width={960}
+            width={width}
             height={700}
             numSegments={numSegments}
             segmentLength={segmentLength}
