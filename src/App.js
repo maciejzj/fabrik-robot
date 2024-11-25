@@ -98,10 +98,6 @@ class RobotModel {
     this.segments = segmentLengths.map((length) => Segment.fromPolar(baseVec2D, length, 0));
   }
 
-  static with_n_segments(baseVec2D, n, length, attached = true) {
-    return new RobotModel(baseVec2D, Array(n).fill(length), (attached = attached));
-  }
-
   get joints() {
     let bases = this.segments.map((segment) => segment.base);
     let lastHead = this.segments[this.segments.length - 1].head;
@@ -220,7 +216,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
   const targetLowPassFilter = useRef(new LowPassFilter2D(1 - smoothingLevel));
-  const [_, setJoints] = useState(robotModel.current.joints);
+  const [, setJoints] = useState(robotModel.current.joints);
 
   // Rebuild the model if the props change
   useEffect(() => {
@@ -232,7 +228,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
     targetLowPassFilter.current.filterY.alpha = 1 - smoothingLevel;
   }, [smoothingLevel]);
 
-  // Update the target based on the mouse position
+  // Update the target based on the mouse/touch position
   useEffect(() => {
     const handleMouseMove = (event) => {
       const rect = document.getElementById("robot-stage").getBoundingClientRect();
@@ -247,18 +243,16 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
       targetVec2D.current.y = clip(event.touches[0].clientY - rect.y, 0, rect.height);
     };
 
-    // Add listeners for both mouse and touch events
     window.addEventListener("mousemove", handleMouseMove);
     document.getElementById("robot-stage").addEventListener("touchmove", handleTouchMove, { passive: false });
 
-    // Cleanup function
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.getElementById("robot-stage").removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
-  // Update the model based on current target and redraw the robot based on model joints positions
+  // Redraw in a fixed interval
   useEffect(() => {
     const id = setInterval(() => {
       let targetFiltered = targetLowPassFilter.current.update(targetVec2D.current);
@@ -269,7 +263,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
     return () => {
       clearInterval(id);
     };
-  }, []);
+  }, [refreshTimeoutMs]);
 
   return (
     <Stage id="robot-stage" width={width} height={height} className="dotted overflow-hidden">
