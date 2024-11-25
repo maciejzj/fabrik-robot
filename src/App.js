@@ -361,14 +361,16 @@ function App() {
   let [width, setWidth] = useState(960);
 
   useEffect(() => {
-    const handleResize = () => {
+    const adjustStageWidth = () => {
       let stageContainer = document.getElementById("robot-stage-container");
       setWidth(stageContainer.getBoundingClientRect().width);
     };
 
-    window.addEventListener("resize", handleResize);
+    adjustStageWidth();
+
+    window.addEventListener("resize", adjustStageWidth);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", adjustStageWidth);
     };
   }, []);
 
