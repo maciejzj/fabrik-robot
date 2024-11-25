@@ -210,7 +210,7 @@ function calcJointRadiuses(numSegments, minRadius, maxRadius, attached) {
   return Array(numSegments + 1).fill(15);
 }
 
-function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0}) {
+function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0 }) {
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
@@ -220,7 +220,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
     [numSegments, minSegmentLength, segmentLength, attached]
   );
   const radiuses = useMemo(
-    () => calcJointRadiuses(numSegments, minJointRadius, maxJointRadius, attached), 
+    () => calcJointRadiuses(numSegments, minJointRadius, maxJointRadius, attached),
     [numSegments, minJointRadius, maxJointRadius, attached]
   );
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
