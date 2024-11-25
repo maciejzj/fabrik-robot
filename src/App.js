@@ -210,7 +210,7 @@ function calcJointRadiuses(numSegments, minRadius, maxRadius, attached) {
   return Array(numSegments + 1).fill(15);
 }
 
-function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0, refreshTimeoutMs = 5 }) {
+function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0}) {
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
@@ -263,18 +263,23 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
     };
   }, []);
 
-  // Redraw in a fixed interval
+  // Animation drawing
   useEffect(() => {
-    const id = setInterval(() => {
-      let targetFiltered = targetLowPassFilter.current.update(targetVec2D.current);
+    let animationFrameId;
+
+    const update = () => {
+      const targetFiltered = targetLowPassFilter.current.update(targetVec2D.current);
       robotModel.current.follow(targetFiltered);
       setJoints(robotModel.current.joints);
-    }, refreshTimeoutMs);
+      animationFrameId = requestAnimationFrame(update);
+    };
+
+    animationFrameId = requestAnimationFrame(update);
 
     return () => {
-      clearInterval(id);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [refreshTimeoutMs]);
+  }, [robotModel]);
 
   return (
     <Stage id="robot-stage" width={width} height={height} className="dotted overflow-hidden">
