@@ -220,7 +220,7 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
   const targetLowPassFilter = useRef(new LowPassFilter2D(1 - smoothingLevel));
-  const [joints, setJoints] = useState(robotModel.current.joints);
+  const [_, setJoints] = useState(robotModel.current.joints);
 
   // Rebuild the model if the props change
   useEffect(() => {
@@ -320,7 +320,9 @@ function Slider({ label, value, setValue, min, max, step }) {
   };
 
   return (
-    <div className="flex h-16 min-w-60 items-center justify-between gap-6 rounded-[2.5rem] bg-black px-8 font-mono text-lg tracking-wider text-white">
+    <div className="flex h-16 min-w-60 items-center justify-between gap-6 rounded-[2.5rem] bg-black px-6 font-mono
+      text-lg tracking-wider text-white
+    ">
       {label}
       <input
         className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white"
@@ -371,13 +373,13 @@ function App() {
 
   return (
     <main className="min-w-[320px]">
-      <header className="border-b-2 border-black px-5">
+      <header className="border-b-2 border-black px-6">
         <div className="mx-auto max-w-[960px] border-x-2 border-black p-5">
           <h1 className="font-mono text-3xl tracking-widest">FABRIK Robot</h1>
         </div>
       </header>
 
-      <section className="border-b-2 border-black px-5">
+      <section className="border-b-2 border-black px-6">
         <div className="mx-auto max-w-[960px] border-x-2 border-black bg-stone-200 p-5">
           <h2 className="mb-3 font-mono text-2xl tracking-wider">Controls</h2>
           <div className="grid grid-cols-1 grid-rows-6 gap-0 sm:grid-cols-2 sm:grid-rows-4 md:grid-cols-4 md:grid-rows-2">
@@ -400,7 +402,7 @@ function App() {
         </div>
       </section>
 
-      <section className="border-b-2 border-black px-5">
+      <section className="border-b-2 border-black px-6">
         <div id="robot-stage-container" className="mx-auto max-w-[960px] border-x-2 border-black">
           <RobotStage
             width={width}
@@ -413,7 +415,7 @@ function App() {
         </div>
       </section>
 
-      <section className="border-b-2 border-black px-5">
+      <section className="border-b-2 border-black px-6">
         <div className="mx-auto max-w-[960px] border-x-2 border-black bg-yellow-50 p-5 sm:text-lg">
           <h2 className="mb-5 font-mono text-2xl tracking-wider">About</h2>
           This website demonstrates the FABRIK (Forward And Backward Reaching Inverse Kinematics) [1] algorithm for
@@ -434,8 +436,11 @@ function App() {
         </div>
       </section>
 
-      <footer className="border-b-2 border-black px-5">
-        <div className="mx-auto flex max-w-[960px] flex-col justify-between gap-1 border-x-2 border-b-2 border-black bg-black p-5 text-lg text-white sm:flex-row sm:text-xl">
+      <footer className="border-b-2 border-black px-6">
+        <div className="
+          mx-auto flex max-w-[960px] flex-col justify-between gap-1 border-x-2 border-b-2 border-black bg-black p-5
+          text-lg text-white sm:flex-row sm:text-xl
+        ">
           Maciej Ziaja
           <div>
             <a href="">maciejzjg@gmail.com</a>
