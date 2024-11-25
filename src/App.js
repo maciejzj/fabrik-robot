@@ -295,8 +295,8 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
         <div className="text-5xl font-mono">{count}</div>
       </div>
       <div className="flex flex-col justify-between items-center text-3xl text-white select-none">
-        <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-gray-400" onClick={increment} disabled={count >= max}>+</button>
-        <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-gray-400" onClick={decrement} disabled={count <= min}>-</button>
+        <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-600" onClick={increment} disabled={count >= max}>+</button>
+        <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-600" onClick={decrement} disabled={count <= min}>-</button>
       </div>
     </div>
   );
@@ -346,14 +346,14 @@ function App() {
   return (
     <main>
       <header className="border-b-2 border-black">
-        <div className="w-[1024px] mx-auto p-5 border-x-2 border-black">
-          <h1 className="text-4xl tracking-widest font-mono">FABRIK Robot</h1>
+        <div className="w-[960px] mx-auto p-5 border-x-2 border-black">
+          <h1 className="text-3xl tracking-widest font-mono">FABRIK Robot</h1>
         </div>
       </header>
 
       <section className="border-b-2 border-black">
-        <div className="w-[1024px] mx-auto p-5 border-x-2 border-black bg-stone-200">
-          <h2 className="mb-3 text-3xl tracking-wider font-mono">Controls</h2>
+        <div className="w-[960px] mx-auto p-5 border-x-2 border-black bg-stone-200">
+          <h2 className="mb-3 text-2xl tracking-wider font-mono">Controls</h2>
           <div className="grid grid-rows-2 grid-cols-8 gap-0">
             <div className="row-span-2 col-span-2">
               <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
@@ -375,9 +375,9 @@ function App() {
       </section>
 
       <section className="border-b-2 border-black">
-        <div className="w-[1024px] mx-auto border-x-2 border-black">
+        <div className="w-[960px] mx-auto border-x-2 border-black">
           <RobotStage
-            width={1024}
+            width={960}
             height={700}
             numSegments={numSegments}
             segmentLength={segmentLength}
@@ -388,8 +388,8 @@ function App() {
       </section>
 
       <section className="border-b-2 border-black">
-        <div className="w-[1024px] mx-auto p-5 border-x-2 border-black bg-yellow-50 text-lg">
-          <h2 className="text-3xl mb-3 tracking-wider font-mono">About</h2>
+        <div className="w-[960px] mx-auto p-5 border-x-2 border-black bg-yellow-50 text-lg">
+          <h2 className="text-2xl mb-3 tracking-wider font-mono">About</h2>
           This website demonstrates the FABRIK (Forward And Backward Reaching Inverse Kinematics) [1] algorithm for robotic motions.
           <div className="grid grid-cols-2 mt-3">
             <div className="max-w-96 px-3 border-l-2 border-black">
@@ -405,7 +405,7 @@ function App() {
       </section>
 
       <footer className="border-b-2 border-black">
-        <div className="w-[1024px] mx-auto p-5 border-x-2 border-b-2 border-black text-xl text-white bg-black">
+        <div className="w-[960px] mx-auto p-5 border-x-2 border-b-2 border-black text-xl text-white bg-black">
           Maciej Ziaja
         </div>
       </footer>
