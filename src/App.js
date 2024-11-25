@@ -190,8 +190,22 @@ function RobotArm({ joints, radiuses }) {
   return <Group>{segments}</Group>;
 }
 
-function scaleDecresingSize(i, total, min, max) {
+function scaleDecresing(i, total, min, max) {
   return ((total - i) / total) * (max - min) + min;
+}
+
+function calcSegmentLengths(numSegments, minLength, maxLength, attached) {
+  if (attached) {
+    return Array.from({ length: numSegments }, (_, i) => scaleDecresing(i, numSegments, minLength, maxLength));
+  }
+  return Array(numSegments).fill(maxLength);
+}
+
+function calcJointRadiuses(numSegments, minRadius, maxRadius, attached) {
+  if (attached) {
+    return Array.from({ length: numSegments + 1 }, (_, i) => scaleDecresing(i, numSegments + 1, minRadius, maxRadius));
+  }
+  return Array(numSegments + 1).fill(15);
 }
 
 function RobotStage({ width, height, numSegments, segmentLength, attached, smoothingLevel = 0, refreshTimeoutMs = 5 }) {
@@ -199,20 +213,8 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   const minSegmentLength = 50;
 
   // Decreasing segment sizes closer to the head if attached, constant size if detached
-  let segmentLengths;
-  let radiuses;
-  if (attached) {
-    segmentLengths = Array.from({ length: numSegments }, (_, i) =>
-      scaleDecresingSize(i, numSegments, minSegmentLength, segmentLength),
-    );
-    radiuses = Array.from({ length: numSegments + 1 }, (_, i) =>
-      scaleDecresingSize(i, numSegments + 1, minJointRadius, maxJointRadius),
-    );
-  } else {
-    segmentLengths = Array(numSegments).fill(segmentLength);
-    radiuses = Array(numSegments + 1).fill(15);
-  }
-
+  const segmentLengths = calcSegmentLengths(numSegments, minSegmentLength, segmentLength, attached);
+  const radiuses = calcJointRadiuses(numSegments, minJointRadius, maxJointRadius, attached);
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
   const targetLowPassFilter = useRef(new LowPassFilter2D(1 - smoothingLevel));
@@ -220,8 +222,9 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
 
   // Rebuild the model if the props change
   useEffect(() => {
+    const segmentLengths = calcSegmentLengths(numSegments, minSegmentLength, segmentLength, attached);
     robotModel.current = new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached);
-  }, [width, numSegments, segmentLength, attached]);
+  }, [width, height, numSegments, segmentLength, attached]);
 
   useEffect(() => {
     targetLowPassFilter.current.filterX.alpha = 1 - smoothingLevel;
