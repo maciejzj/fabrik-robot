@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { Stage, Layer, Line, Group, Circle } from "react-konva";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Utils
 
@@ -215,8 +215,14 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   const minSegmentLength = 50;
 
   // Decreasing segment sizes closer to the head if attached, constant size if detached
-  const segmentLengths = calcSegmentLengths(numSegments, minSegmentLength, segmentLength, attached);
-  const radiuses = calcJointRadiuses(numSegments, minJointRadius, maxJointRadius, attached);
+  const segmentLengths = useMemo(
+    () => calcSegmentLengths(numSegments, minSegmentLength, segmentLength, attached),
+    [numSegments, minSegmentLength, segmentLength, attached]
+  );
+  const radiuses = useMemo(
+    () => calcJointRadiuses(numSegments, minJointRadius, maxJointRadius, attached), 
+    [numSegments, minJointRadius, maxJointRadius, attached]
+  );
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
   const targetLowPassFilter = useRef(new LowPassFilter2D(1 - smoothingLevel));
