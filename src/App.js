@@ -299,7 +299,7 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
   };
 
   return (
-    <div className="flex h-32 min-w-44 justify-between gap-3 rounded-[2.5rem] bg-white p-6">
+    <div className="flex h-32 min-w-40 justify-between gap-3 rounded-[2.5rem] bg-white p-6">
       <div className="flex flex-col justify-between">
         <div className="text-xl">{label}</div>
         <div className="font-mono text-5xl">{count}</div>
