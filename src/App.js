@@ -179,6 +179,7 @@ function RobotArm({ joints, radiuses }) {
   for (let i = 0; i < joints.length - 1; i++) {
     segments.push(
       <RobotSegment
+        key={`segment-${i}`}
         baseVec2D={joints[i]}
         headVec2D={joints[i + 1]}
         baseRadius={radiuses[i]}
@@ -189,6 +190,7 @@ function RobotArm({ joints, radiuses }) {
 
   return <Group>{segments}</Group>;
 }
+
 
 function scaleDecresing(i, total, min, max) {
   return ((total - i) / total) * (max - min) + min;
