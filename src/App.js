@@ -202,8 +202,6 @@ function RobotStage({ width, height, numSegments, segmentLength, attached, smoot
   const [minJointRadius, maxJointRadius] = [10, 25];
   const minSegmentLength = 50;
 
-  console.log(`Component git width ${width}`);
-
   // Decreasing segment sizes closer to the head if attached, constant size if detached
   let segmentLengths;
   let radiuses;
@@ -297,8 +295,8 @@ function Counter({ label, count, setCount, min, max, interval = 1 }) {
         <div className="text-5xl font-mono">{count}</div>
       </div>
       <div className="flex flex-col justify-between items-center text-3xl text-white select-none">
-        <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-600" onClick={increment} disabled={count >= max}>+</button>
-        <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-600" onClick={decrement} disabled={count <= min}>-</button>
+        <button className="flex-grow rounded-t-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300" onClick={increment} disabled={count >= max}>+</button>
+        <button className="flex-grow rounded-b-full w-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300" onClick={decrement} disabled={count <= min}>-</button>
       </div>
     </div>
   );
@@ -313,7 +311,7 @@ function Slider({ label, value, setValue, min, max, step }) {
     <div className="flex gap-6 justify-between items-center h-16 px-8 bg-black rounded-[2.5rem] text-lg font-mono tracking-wider text-white">
       {label}
       <input
-        className="h-1 flex-grow bg-white rounded-lg appearance-none cursor-pointer"
+        className="min-w-6 h-1 flex-grow bg-white rounded-lg appearance-none cursor-pointer"
         type="range"
         min={min}
         max={max}
@@ -349,7 +347,6 @@ function App() {
   useEffect(() => {
     let handle = window.addEventListener("resize", () => {
       let stageContainer = document.getElementById("robot-stage-container");
-      console.log(stageContainer.getBoundingClientRect().width);
       setWidth(stageContainer.getBoundingClientRect().width);
     });
     return () => { window.removeEventListener("resize", handle); };
@@ -357,40 +354,40 @@ function App() {
 
   return (
     <main>
-      <header className="border-b-2 border-black">
-        <div className="w-[960px] mx-auto p-5 border-x-2 border-black">
+      <header className="border-b-2 border-black px-5">
+        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-black">
           <h1 className="text-3xl tracking-widest font-mono">FABRIK Robot</h1>
         </div>
       </header>
 
-      <section className="border-b-2 border-black">
-        <div className="w-[960px] mx-auto p-5 border-x-2 border-black bg-stone-200">
+      <section className="border-b-2 border-black px-5">
+        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-black bg-stone-200">
           <h2 className="mb-3 text-2xl tracking-wider font-mono">Controls</h2>
-          <div className="grid grid-rows-2 grid-cols-8 gap-0">
-            <div className="row-span-2 col-span-2">
+          <div className="grid gap-0 grid-rows-6 grid-cols-1 sm:grid-rows-4 sm:grid-cols-2 md:grid-rows-2 md:grid-cols-4">
+            <div className="row-span-2 col-span-1 md:row-span-2 md:col-span-1">
               <Counter label="Segments" count={numSegments} setCount={setNumSegments} min={1} max={6} />
             </div>
-            <div className="row-span-2 col-span-2">
+            <div className="row-span-2 col-span-1 md:row-span-2 md:col-span-1">
               <Counter label="Length" count={segmentLength} setCount={setSegmentLength} min={50} max={150} interval={10} />
             </div>
-            <div className="row-start-1 col-start-5 col-span-4 flex">
-              <div className="w-32">
+            <div className="sm:col-span-2 md:row-span-1 md:col-span-2 flex">
+              <div className="flex-grow sm:flex-grow-0 sm:w-36">
                 <Toogle toogled={attached} setToogle={setAttached} enableText="Attach" disableText="Detach" />
               </div>
-              <div className="flex-grow bg-gray-100 rounded-full"></div>
+              <div className="hidden sm:block flex-grow bg-gray-100 rounded-full"></div>
             </div>
-            <div className="row-start-2 col-start-5 col-span-4">
+            <div className="sm:col-span-2 md:row-span-1">
               <Slider label="Glide" value={smoothingLevel} setValue={setSmoothingLevel} min={0} max={0.9} step={0.1} />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-black">
+      <section className="border-b-2 border-black px-5">
         <div id="robot-stage-container" className="max-w-[960px] mx-auto border-x-2 border-black">
           <RobotStage
             width={width}
-            height={700}
+            height={600}
             numSegments={numSegments}
             segmentLength={segmentLength}
             smoothingLevel={smoothingLevel}
@@ -399,11 +396,11 @@ function App() {
         </div>
       </section>
 
-      <section className="border-b-2 border-black">
-        <div className="w-[960px] mx-auto p-5 border-x-2 border-black bg-yellow-50 text-lg">
-          <h2 className="text-2xl mb-3 tracking-wider font-mono">About</h2>
+      <section className="border-b-2 border-black px-5">
+        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-black bg-yellow-50 sm:text-lg">
+          <h2 className="text-2xl mb-5 tracking-wider font-mono">About</h2>
           This website demonstrates the FABRIK (Forward And Backward Reaching Inverse Kinematics) [1] algorithm for robotic motions.
-          <div className="grid grid-cols-2 mt-3">
+          <div className="grid md:grid-cols-2 gap-5 mt-5">
             <div className="max-w-96 px-3 border-l-2 border-black">
               <a className="hover:underline" href="">
                 [1] A. Aristidou, J. Lasenby, FABRIK: A fast, iterative solver for the Inverse Kinematics problem, Graphical Models
@@ -416,8 +413,8 @@ function App() {
         </div>
       </section>
 
-      <footer className="border-b-2 border-black">
-        <div className="w-[960px] mx-auto p-5 border-x-2 border-b-2 border-black text-xl text-white bg-black">
+      <footer className="border-b-2 border-black px-5">
+        <div className="max-w-[960px] mx-auto p-5 border-x-2 border-b-2 border-black text-xl text-white bg-black">
           Maciej Ziaja
         </div>
       </footer>
