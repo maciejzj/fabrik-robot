@@ -1,5 +1,7 @@
 # FABRIK Robot
 
+![CI](https://github.com/maciej/Developer/fabrik-robot/actions/workflows/ci.yml/badge.svg)
+
 FABRIK algorithm-based inverse kinematics robot for the web.
 
 Features pure JavaScript implementation of the
