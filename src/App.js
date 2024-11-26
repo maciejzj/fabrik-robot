@@ -94,10 +94,10 @@ function App() {
       </section>
 
       <footer className="border-b-2 border-black px-6">
-        <div className="
-          mx-auto flex max-w-[960px] flex-col justify-between gap-1 border-x-2 border-b-2 border-black bg-black p-5
-          text-lg text-white sm:flex-row sm:text-xl
-        ">
+        <div
+          className="mx-auto flex max-w-[960px] flex-col justify-between gap-1 border-x-2 border-b-2 border-black
+          bg-black p-5 text-lg text-white sm:flex-row sm:text-xl"
+        >
           Maciej Ziaja
           <div>
             <a href="">maciejzjg@gmail.com</a>

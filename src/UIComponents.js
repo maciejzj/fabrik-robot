@@ -38,9 +38,10 @@ export function Slider({ label, value, setValue, min, max, step }) {
   };
 
   return (
-    <div className="flex h-16 min-w-60 items-center justify-between gap-6 rounded-[2.5rem] bg-black px-6 font-mono
-      text-lg tracking-wider text-white
-    ">
+    <div
+      className="flex h-16 min-w-60 items-center justify-between gap-6 rounded-[2.5rem] bg-black px-6 font-mono
+      text-lg tracking-wider text-white"
+    >
       {label}
       <input
         className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white"

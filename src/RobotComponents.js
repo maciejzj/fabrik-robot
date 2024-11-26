@@ -68,11 +68,11 @@ export function RobotStage({ width, height, numSegments, segmentLength, attached
   // Decreasing segment sizes closer to the head if attached, constant size if detached
   const segmentLengths = useMemo(
     () => calcSegmentLengths(numSegments, minSegmentLength, segmentLength, attached),
-    [numSegments, minSegmentLength, segmentLength, attached]
+    [numSegments, minSegmentLength, segmentLength, attached],
   );
   const radiuses = useMemo(
     () => calcJointRadiuses(numSegments, minJointRadius, maxJointRadius, attached),
-    [numSegments, minJointRadius, maxJointRadius, attached]
+    [numSegments, minJointRadius, maxJointRadius, attached],
   );
   const targetVec2D = useRef(new Vec2D(width / 2, 0));
   const robotModel = useRef(new RobotModel(new Vec2D(width / 2, height), segmentLengths, attached));
@@ -135,7 +135,7 @@ export function RobotStage({ width, height, numSegments, segmentLength, attached
   return (
     <Stage id="robot-stage" width={width} height={height} className="dotted overflow-hidden">
       <Layer>
-      <RobotArm joints={robotModel.current.joints} radiuses={radiuses} />
+        <RobotArm joints={robotModel.current.joints} radiuses={radiuses} />
       </Layer>
     </Stage>
   );
