@@ -83,16 +83,13 @@ export function RobotStage({ width, height, numSegments, segmentLength, attached
   useEffect(() => {
     const segmentLengths = calcSegmentLengths(numSegments, minSegmentLength, segmentLength, attached);
     robotModel.current.makeSegments(segmentLengths);
+    robotModel.current.attached = attached;
   }, [numSegments, segmentLength, attached]);
 
   useEffect(() => {
     robotModel.current.base = new Vec2D(width / 2, height);
     targetVec2D.current = new Vec2D(width / 2, 0);
   }, [width, height]);
-
-  useEffect(() => {
-    robotModel.current.attached = attached;
-  }, [attached]);
 
   useEffect(() => {
     targetLowPassFilter.current.filterX.alpha = 1 - smoothingLevel;
