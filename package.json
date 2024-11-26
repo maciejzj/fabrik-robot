@@ -12,6 +12,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "format": "npx prettier -w src",
+    "check-format": "npx prettier --check src",
     "lint": "npx eslint src"
   },
   "eslintConfig": {
