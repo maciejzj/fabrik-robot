@@ -114,7 +114,7 @@ export function RobotStage({ width, height, numSegments, segmentLength, attached
     };
   }, []);
 
-  // Animation drawing
+  // Main animation drawing
   useEffect(() => {
     let animationFrameId;
 

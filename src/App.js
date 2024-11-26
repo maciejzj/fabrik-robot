@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { RobotStage } from "./RobotComponents";
 import { Toggle, Slider, Counter } from "./UIComponents";
 
-// UI components and app
-
 function App() {
   let [numSegments, setNumSegments] = useState(5);
   let [segmentLen, setSegmentLen] = useState(120);
