@@ -15,3 +15,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.dotted {
+  background: white;
+  background-image: radial-gradient(black 1px, transparent 0);
+  background-size: 25px 25px;
+  background-position: -19px -19px;
+}
