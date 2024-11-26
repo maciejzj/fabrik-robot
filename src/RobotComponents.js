@@ -133,7 +133,7 @@ export function RobotStage({ width, height, numSegments, segmentLength, attached
   }, [robotModel]);
 
   return (
-    <Stage id="robot-stage" width={width} height={height} className="dotted overflow-hidden">
+    <Stage id="robot-stage" width={width} height={height} className="dotted select-none overflow-hidden">
       <Layer>
         <RobotArm joints={robotModel.current.joints} radiuses={radiuses} />
       </Layer>

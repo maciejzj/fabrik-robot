@@ -7,12 +7,12 @@ export function Counter({ label, count, setCount, min, max, interval = 1 }) {
   };
 
   return (
-    <div className="flex h-32 min-w-40 justify-between gap-3 rounded-[2.5rem] bg-white p-6">
+    <div className="flex h-32 min-w-40 select-none justify-between gap-3 rounded-[2.5rem] bg-white p-6">
       <div className="flex flex-col justify-between">
         <div className="text-xl">{label}</div>
         <div className="font-mono text-5xl">{count}</div>
       </div>
-      <div className="flex select-none flex-col items-center justify-between text-3xl text-white">
+      <div className="flex flex-col items-center justify-between text-3xl text-white">
         <button
           className="w-full flex-grow rounded-t-full px-1.5 py-0.5 enabled:bg-black disabled:bg-stone-300"
           onClick={increment}
@@ -39,8 +39,8 @@ export function Slider({ label, value, setValue, min, max, step }) {
 
   return (
     <div
-      className="flex h-16 min-w-60 items-center justify-between gap-6 rounded-[2.5rem] bg-black px-6 font-mono text-lg tracking-wider
-        text-white"
+      className="flex h-16 min-w-60 select-none items-center justify-between gap-6 rounded-[2.5rem] bg-black px-6 font-mono text-lg
+        tracking-wider text-white"
     >
       {label}
       <input
@@ -63,7 +63,7 @@ export function Toggle({ toggled, setToggle, enableText, disableText }) {
   };
   return (
     <button
-      className="h-16 w-full rounded-[2.5rem] bg-gray-100 px-6 text-center text-xl tracking-wider"
+      className="h-16 w-full select-none rounded-[2.5rem] bg-gray-100 px-6 text-center text-xl tracking-wider"
       onClick={toggle}
     >
       {toggled ? disableText : enableText}
