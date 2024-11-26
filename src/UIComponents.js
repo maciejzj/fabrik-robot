@@ -44,7 +44,7 @@ export function Slider({ label, value, setValue, min, max, step }) {
     >
       {label}
       <input
-        className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white"
+        className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white accent-white"
         type="range"
         min={min}
         max={max}
