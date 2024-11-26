@@ -77,13 +77,23 @@ function App() {
           robotic motions.
           <div className="mt-5 grid gap-5 md:grid-cols-2">
             <div className="max-w-96 border-l-2 border-black px-3">
-              <a className="hover:underline" href="">
+              <a
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://doi.org/10.1016/j.gmod.2011.05.003"
+              >
                 [1] A. Aristidou, J. Lasenby, FABRIK: A fast, iterative solver for the Inverse Kinematics problem,
                 Graphical Models
               </a>
             </div>
             <div className="max-w-32 border-l-2 border-black px-3">
-              <a className="hover:underline" href="">
+              <a
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/maciejzj/fabrik-robot"
+              >
                 Source code on GitHub
               </a>
             </div>
@@ -98,7 +108,7 @@ function App() {
         >
           Maciej Ziaja
           <div>
-            <a href="">maciejzjg@gmail.com</a>
+            <a href="mailto:maciejzjg@gmail.com">maciejzjg@gmail.com</a>
           </div>
         </div>
       </footer>
