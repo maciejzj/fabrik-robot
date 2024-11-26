@@ -80,7 +80,11 @@ export class RobotModel {
   constructor(baseVec2D, segmentLengths, attached = true) {
     this.base = baseVec2D;
     this.attached = attached;
-    this.segments = segmentLengths.map((length) => Segment.fromPolar(baseVec2D, length, 0));
+    this.makeSegments(segmentLengths);
+  }
+
+  makeSegments(segmentLengths) {
+    this.segments = segmentLengths.map((length) => Segment.fromPolar(this.base, length, 0));
   }
 
   get joints() {
