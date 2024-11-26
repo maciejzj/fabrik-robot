@@ -1,6 +1,6 @@
 # FABRIK Robot
 
-![CI](https://github.com/maciej/Developer/fabrik-robot/actions/workflows/ci.yml/badge.svg)
+[![Code quality checks](https://github.com/maciejzj/fabrik-robot/actions/workflows/ci.yml/badge.svg)](https://github.com/maciejzj/fabrik-robot/actions/workflows/ci.yml)
 
 FABRIK algorithm-based inverse kinematics robot for the web.
 
