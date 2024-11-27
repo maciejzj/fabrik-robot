@@ -5,7 +5,7 @@
 FABRIK algorithm-based inverse kinematics robot for the web.
 
 Features pure JavaScript implementation of the
-[FARBIK](https://doi.org/10.1016/j.gmod.2011.05.003) algorithm for inverse
+[FABRIK](https://doi.org/10.1016/j.gmod.2011.05.003) algorithm for inverse
 kinematics in two dimensions. Web app UI implemented in React, styling done
 using Tailwind CSS.
 
@@ -37,7 +37,7 @@ using Tailwind CSS.
 ## UI Design
 
 Reference design for the website UI can be viewed at
-[FIGMA](https://www.figma.com/design/eS6NC2thxi41dEe3xhVbCQ/FARBIK-Robot?node-id=0-1&t=lMM1BIHG55EOC8aC-1).
+[FIGMA](https://www.figma.com/design/eS6NC2thxi41dEe3xhVbCQ/FABRIK-Robot?t=fAczryUzVz0VfH5b-1).
 
 ## Other
 
