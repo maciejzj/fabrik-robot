@@ -33,3 +33,13 @@ using Tailwind CSS.
   npm start
   ```
 2. Open your browser and navigate to `http://localhost:3000` to see the app in action.
+
+## UI Design
+
+Reference design for the website UI can be viewed at
+[FIGMA](https://www.figma.com/design/eS6NC2thxi41dEe3xhVbCQ/FARBIK-Robot?node-id=0-1&t=lMM1BIHG55EOC8aC-1).
+
+## Other
+
+Self contained Python prototype using PyGame as a
+[Gist](https://gist.github.com/maciejzj/95603f07572d7aa8a84dbb15221a3d74).
