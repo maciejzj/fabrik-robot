@@ -32,7 +32,7 @@ export function Counter({ label, count, setCount, min, max, interval = 1 }) {
   );
 }
 
-export function Slider({ label, value, setValue, min, max, step }) {
+export function Slider({ label, value, setValue, min, max, step, displayDigits = 1 }) {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
@@ -52,7 +52,7 @@ export function Slider({ label, value, setValue, min, max, step }) {
         value={value}
         onChange={handleChange}
       />
-      {value}
+      {Number(value).toFixed(displayDigits)}
     </div>
   );
 }
