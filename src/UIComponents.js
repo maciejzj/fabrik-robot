@@ -44,7 +44,11 @@ export function Slider({ label, value, setValue, min, max, step, displayDigits =
     >
       {label}
       <input
-        className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white accent-white"
+        className="h-1 min-w-6 flex-grow cursor-pointer appearance-none rounded-lg bg-white accent-white [&::-moz-range-thumb]:h-5
+          [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full
+          [&::-moz-range-thumb]:bg-white [&::-ms-thumb]:h-5 [&::-ms-thumb]:w-5 [&::-ms-thumb]:appearance-none
+          [&::-ms-thumb]:rounded-full [&::-ms-thumb]:bg-white [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5
+          [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
         type="range"
         min={min}
         max={max}
