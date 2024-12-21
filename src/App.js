@@ -11,11 +11,13 @@ function App() {
   let [attached, setAttached] = useState(true);
   let [smoothingLvl, setSmoothingLvl] = useState(0.5);
   let [width, setWidth] = useState(960);
+  let [height, setHeight] = useState(600);
 
   useEffect(() => {
     const adjustStageWidth = () => {
       let stageContainer = document.getElementById("robot-stage-container");
       setWidth(stageContainer.getBoundingClientRect().width);
+      setHeight(stageContainer.getBoundingClientRect().height);
     };
 
     adjustStageWidth();
@@ -27,7 +29,7 @@ function App() {
   }, []);
 
   return (
-    <main className="min-w-[320px]">
+    <main className="flex h-screen min-w-[320px] flex-col">
       <header className="border-b-2 border-black px-6">
         <div className="mx-auto max-w-[960px] border-x-2 border-black p-5">
           <h1 className="font-mono text-3xl tracking-widest">FABRIK Robot</h1>
@@ -57,11 +59,11 @@ function App() {
         </div>
       </section>
 
-      <section className="border-b-2 border-black px-6">
-        <div id="robot-stage-container" className="mx-auto max-w-[960px] border-x-2 border-black">
+      <section className="min-h-[600px] flex-grow border-b-2 border-black px-6">
+        <div id="robot-stage-container" className="mx-auto h-full max-w-[960px] border-x-2 border-black">
           <RobotStage
             width={width}
-            height={600}
+            height={height}
             numSegments={numSegments}
             segmentLength={segmentLen}
             smoothingLevel={smoothingLvl}
